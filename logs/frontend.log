@@ -2,13 +2,10 @@
 > frontend-react@0.0.0 dev
 > vite
 
+Port 5173 is in use, trying another one...
+Port 5174 is in use, trying another one...
 
-  VITE v4.5.14  ready in 681 ms
+  VITE v4.5.14  ready in 512 ms
 
-  ➜  Local:   http://localhost:5173/
+  ➜  Local:   http://localhost:5175/
   ➜  Network: use --host to expose
-8:08:17 PM [vite] hmr update /src/App.jsx, /src/index.css
-8:15:18 PM [vite] hmr update /src/App.jsx, /src/index.css
-8:17:01 PM [vite] hmr update /src/App.jsx, /src/index.css
-8:19:00 PM [vite] hmr update /src/App.jsx, /src/index.css
-8:19:13 PM [vite] hmr update /src/App.jsx, /src/index.css

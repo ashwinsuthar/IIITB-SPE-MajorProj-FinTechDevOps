@@ -6,7 +6,7 @@ mkdir -p logs
 echo "========== Starting Stock Portfolio System =========="
 
 echo "1. Starting Docker Infrastructure (Postgres, Redis, Kafka, Zookeeper, ELK, Vault)..."
-docker-compose up -d
+docker compose up -d
 
 echo "2. Setting up Python FastAPI Price Prediction Service..."
 cd price-prediction
