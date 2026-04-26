@@ -136,8 +136,8 @@ function Dashboard() {
 
   const fetchPortfolio = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/portfolio/summary`);
-      setPortfolioValue(response.data.totalValue || 0);
+      const response = await axios.get(`${API_BASE_URL}/portfolio`);
+      setPortfolioValue(response.data.balance || 0);
       setOrderCount(response.data.orderCount || 0);
       
       // Calculate holdings for current ticker
@@ -336,7 +336,7 @@ function Dashboard() {
                   contentStyle={{ backgroundColor: '#05070a', border: '1px solid #ffffff08', borderRadius: '24px', boxShadow: '0 50px 100px -20px rgba(0, 0, 0, 0.8)', padding: '20px' }}
                   itemStyle={{ color: '#3b82f6', fontWeight: '900', fontSize: '20px', letterSpacing: '-0.05em' }}
                   labelStyle={{ color: '#9ca3af', marginBottom: '10px', fontSize: '10px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.2em' }}
-                  formatter={(value) => [`$${value.toFixed(2)}`, 'PRICE']}
+                  formatter={(value) => [value ? `$${value.toFixed(2)}` : '$0.00', 'PRICE']}
                 />
                 <Area 
                   type="monotone" 
