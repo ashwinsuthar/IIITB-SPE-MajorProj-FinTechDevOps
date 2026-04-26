@@ -12,7 +12,7 @@ echo "2. Setting up Python FastAPI Price Prediction Service..."
 cd price-prediction
 # If pip isn't available globally, you might need a virtualenv. 
 # We'll run it explicitly
-python3 -m pip install -r requirements.txt > /dev/null 2>&1
+python3 -m pip install -r requirements.txt --break-system-packages > /dev/null 2>&1
 nohup python3 -m uvicorn main:app --host 0.0.0.0 --port 8000 > ../logs/price_prediction.log 2>&1 &
 echo "Python Service started on port 8000 (PID: $!). Background log: logs/price_prediction.log"
 cd ..
