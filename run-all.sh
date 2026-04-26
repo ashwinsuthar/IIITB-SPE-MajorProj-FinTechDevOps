@@ -13,22 +13,30 @@ echo "========== Stock Portfolio System: RAM OPTIMIZED RESTART =========="
 # 1. Cleanup Phase
 echo "Step 1: Cleaning up existing processes..."
 pkill -u $(whoami) -f java || true
-pkill -u $(whoami) -f gradlew || true
 pkill -u $(whoami) -f uvicorn || true
 pkill -u $(whoami) -f "npm run dev" || true
 pkill -u $(whoami) -f vite || true
-./gradlew --stop || true
+
+# Kill any dangling gradlew processes in subdirectories
+pkill -u $(whoami) -f gradlew || true
+
 echo "Cleanup complete."
 
-# 2. Build Phase (Crucial to avoid 9 Gradle Daemons)
-echo "Step 2: Building all Java Microservices (this may take a minute)..."
-# Build everything once using ONE gradle process
-./gradlew build -x test --no-daemon
-if [ $? -ne 0 ]; then
-    echo "ERROR: Build failed. Aborting startup."
-    exit 1
-fi
-echo "Build successful."
+# 2. Build Phase
+echo "Step 2: Building all Java Microservices individually..."
+JAVA_SERVICES=("config-server" "eureka-server" "user-service" "order-service" "portfolio-service" "market-data" "api-gateway" "notification-service" "risk-service")
+
+for SERVICE in "${JAVA_SERVICES[@]}"; do
+    echo "Building $SERVICE..."
+    cd "$SERVICE"
+    ./gradlew build -x test --no-daemon
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Build failed for $SERVICE. Aborting."
+        exit 1
+    fi
+    cd ..
+done
+echo "All builds successful."
 
 # 3. Infrastructure (Docker)
 echo "Step 3: Ensuring Docker Infrastructure is UP (with memory limits)..."
