@@ -8,28 +8,28 @@ function Login() {
       <div className="bg-gray-800 p-8 rounded-lg shadow-2xl w-full max-w-md border border-gray-700">
         <h2 className="text-3xl font-bold mb-2 text-blue-400 text-center">StockSystem</h2>
         <p className="text-gray-400 text-center mb-8">Sign in to your trading account</p>
-        
+
         <form onSubmit={(e) => { e.preventDefault(); window.location.href = '/dashboard'; }}>
           <div className="mb-5">
             <label className="block text-sm text-gray-400 mb-2">Username or Email</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="e.g. trader@example.com"
-              className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-600" 
-              required 
+              className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-600"
+              required
             />
           </div>
           <div className="mb-8">
             <label className="block text-sm text-gray-400 mb-2">Password</label>
-            <input 
-              type="password" 
+            <input
+              type="password"
               placeholder="••••••••"
-              className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-600" 
-              required 
+              className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-600"
+              required
             />
           </div>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg transition font-semibold text-lg shadow-lg hover:shadow-blue-500/50"
           >
             Access Dashboard
@@ -44,6 +44,20 @@ function Dashboard() {
   const [ticker, setTicker] = useState('AAPL');
   const [data, setData] = useState([]);
   const [portfolioValue, setPortfolioValue] = useState(15000);
+
+  const handleBuy = () => {
+    if (portfolioValue >= 1000) {
+      alert(`[Order Execution Service] BUY ORDER EXECUTED: 10 shares of ${ticker}`);
+      setPortfolioValue(prev => prev - 1000);
+    } else {
+      alert('Insufficient funds in portfolio!');
+    }
+  };
+
+  const handleSell = () => {
+    alert(`[Order Execution Service] SELL ORDER EXECUTED: 10 shares of ${ticker}`);
+    setPortfolioValue(prev => prev + 1000);
+  };
 
   useEffect(() => {
     // Mock fetch data from Gateway or Python Service directly
@@ -63,7 +77,7 @@ function Dashboard() {
           <h1 className="text-3xl font-bold text-blue-400">Stock Portfolio & Trade Execution System</h1>
           <p className="text-gray-400 mt-2">Real-time Trading & Risk Management Dashboard</p>
         </div>
-        <button 
+        <button
           onClick={() => window.location.href = '/login'}
           className="text-sm bg-gray-800 hover:bg-gray-700 border border-gray-600 px-4 py-2 rounded transition"
         >
@@ -75,9 +89,9 @@ function Dashboard() {
         <section className="col-span-2 bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Live Market Data ({ticker})</h2>
-            <input 
-              type="text" 
-              value={ticker} 
+            <input
+              type="text"
+              value={ticker}
               onChange={(e) => setTicker(e.target.value.toUpperCase())}
               className="bg-gray-700 text-white px-3 py-1 rounded outline-none focus:ring-2 focus:ring-blue-500 border border-gray-600"
             />
@@ -103,8 +117,8 @@ function Dashboard() {
             <p className="text-gray-400 mt-2">+5.2% Today</p>
           </div>
           <div className="mt-8 space-y-4">
-            <button className="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg transition font-medium shadow-lg shadow-blue-500/20">Buy Stock</button>
-            <button className="w-full bg-red-600 hover:bg-red-500 text-white py-3 rounded-lg transition font-medium shadow-lg shadow-red-500/20">Sell Stock</button>
+            <button onClick={handleBuy} className="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg transition font-medium shadow-lg shadow-blue-500/20">Buy Stock</button>
+            <button onClick={handleSell} className="w-full bg-red-600 hover:bg-red-500 text-white py-3 rounded-lg transition font-medium shadow-lg shadow-red-500/20">Sell Stock</button>
           </div>
         </section>
       </main>
