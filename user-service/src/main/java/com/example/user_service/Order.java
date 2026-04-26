@@ -14,15 +14,17 @@ public class Order {
     private Integer quantity;
     private Double price;
     private String type; // BUY or SELL
+    private String username;
     private LocalDateTime timestamp;
 
     public Order() {}
 
-    public Order(String ticker, Integer quantity, Double price, String type) {
+    public Order(String ticker, Integer quantity, Double price, String type, String username) {
         this.ticker = ticker;
         this.quantity = quantity;
         this.price = price;
         this.type = type;
+        this.username = username;
         this.timestamp = LocalDateTime.now();
     }
 
@@ -37,6 +39,8 @@ public class Order {
     public void setPrice(Double price) { this.price = price; }
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
     public LocalDateTime getTimestamp() { return timestamp; }
     public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
 }

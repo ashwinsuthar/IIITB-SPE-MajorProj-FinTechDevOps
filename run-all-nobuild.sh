@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Configuration
+# Configuration Ashwin Suthar MT2025024 - IIIT B SPE Major project FinTech DevOps
 LOG_DIR="logs"
 mkdir -p "$LOG_DIR"
 
@@ -10,6 +10,9 @@ export GRADLE_OPTS="-Xmx512m"
 
 echo "========== Stock Portfolio System: RAM OPTIMIZED RESTART =========="
 
+# 1. Capture the start time
+start_time=$(date +%s)
+echo $(date -d "@$start_time" +"%T")
 # 1. Cleanup Phase
 echo "Step 1: Cleaning up existing processes..."
 pkill -u $(whoami) -f java || true
@@ -22,21 +25,7 @@ pkill -u $(whoami) -f gradlew || true
 
 echo "Cleanup complete."
 
-# 2. Build Phase
-echo "Step 2: Building all Java Microservices individually..."
-JAVA_SERVICES=("config-server" "eureka-server" "user-service" "order-service" "portfolio-service" "market-data" "api-gateway" "notification-service" "risk-service")
-
-for SERVICE in "${JAVA_SERVICES[@]}"; do
-    echo "Building $SERVICE..."
-    cd "$SERVICE"
-    ./gradlew build -x test --no-daemon
-    if [ $? -ne 0 ]; then
-        echo "ERROR: Build failed for $SERVICE. Aborting."
-        exit 1
-    fi
-    cd ..
-done
-echo "All builds successful."
+# 2. No Build Phase
 
 # 3. Infrastructure (Docker)
 echo "Step 3: Ensuring Docker Infrastructure is UP (with memory limits)..."
@@ -103,3 +92,16 @@ echo "Project restart sequence initiated with RAM optimization!"
 echo "Total Java Services: 9 | Target RAM usage: ~2GB"
 echo "Logs are in '$LOG_DIR/'"
 echo "=========================================================="
+
+# 2. Record end time
+end_time=$(date +%s)
+# 3. Calculate total elapsed seconds
+elapsed=$(( end_time - start_time ))
+
+# 4. Convert seconds into HH:MM:SS format
+hours=$(( elapsed / 3600 ))
+mins=$(( (elapsed % 3600) / 60 ))
+secs=$(( elapsed % 60 ))
+
+# 5. Print the result with leading zeros
+printf "Total time: %02d:%02d:%02d\n" "$hours" "$mins" "$secs"

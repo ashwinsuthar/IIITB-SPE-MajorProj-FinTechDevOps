@@ -5,6 +5,61 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 const API_BASE_URL = 'http://localhost:8081/api';
 const MARKET_API_URL = 'http://localhost:8000/api';
 
+const STOCKS = [
+  // USA (Fortune 200)
+  { value: "AAPL", label: "Apple Inc." }, { value: "MSFT", label: "Microsoft Corp." },
+  { value: "GOOGL", label: "Alphabet Inc." }, { value: "AMZN", label: "Amazon.com" },
+  { value: "NVDA", label: "NVIDIA Corp." }, { value: "META", label: "Meta Platforms" },
+  { value: "TSLA", label: "Tesla Inc." }, { value: "BRK-B", label: "Berkshire Hathaway" },
+  { value: "UNH", label: "UnitedHealth Group" }, { value: "LLY", label: "Eli Lilly and Co" },
+  { value: "JPM", label: "JPMorgan Chase" }, { value: "V", label: "Visa Inc." },
+  { value: "XOM", label: "Exxon Mobil" }, { value: "MA", label: "Mastercard Inc." },
+  { value: "AVGO", label: "Broadcom Inc." }, { value: "HD", label: "Home Depot" },
+  { value: "PG", label: "Procter & Gamble" }, { value: "COST", label: "Costco Wholesale" },
+  { value: "JNJ", label: "Johnson & Johnson" }, { value: "ABBV", label: "AbbVie Inc." },
+  { value: "MRK", label: "Merck & Co." }, { value: "CRM", label: "Salesforce Inc." },
+  { value: "ADBE", label: "Adobe Inc." }, { value: "AMD", label: "AMD Inc." },
+  { value: "CVX", label: "Chevron Corp." }, { value: "NFLX", label: "Netflix Inc." },
+  { value: "PEP", label: "PepsiCo Inc." }, { value: "KO", label: "Coca-Cola Co." },
+  { value: "TMO", label: "Thermo Fisher" }, { value: "WMT", label: "Walmart Inc." },
+  { value: "MCD", label: "McDonald's Corp." }, { value: "DIS", label: "Walt Disney" },
+  { value: "CSCO", label: "Cisco Systems" }, { value: "TMUS", label: "T-Mobile US" },
+  { value: "ABT", label: "Abbott Labs" }, { value: "BAC", label: "Bank of America" },
+  { value: "INTC", label: "Intel Corp." }, { value: "PFE", label: "Pfizer Inc." },
+  { value: "QCOM", label: "Qualcomm Inc." }, { value: "ORCL", label: "Oracle Corp." },
+  { value: "LIN", label: "Linde plc" }, { value: "VZ", label: "Verizon" },
+  { value: "CMCSA", label: "Comcast" }, { value: "INTU", label: "Intuit Inc." },
+  { value: "AMAT", label: "Applied Materials" }, { value: "TXN", label: "Texas Instruments" },
+  { value: "BKNG", label: "Booking Holdings" }, { value: "UNP", label: "Union Pacific" },
+  { value: "LOW", label: "Lowe's Companies" }, { value: "SBUX", label: "Starbucks" },
+  // INDIA (Nifty 50)
+  { value: "RELIANCE.NS", label: "Reliance Industries" }, { value: "TCS.NS", label: "Tata Consultancy Services" },
+  { value: "HDFCBANK.NS", label: "HDFC Bank Ltd." }, { value: "BHARTIARTL.NS", label: "Bharti Airtel Ltd." },
+  { value: "ICICIBANK.NS", label: "ICICI Bank Ltd." }, { value: "INFY.NS", label: "Infosys Limited" },
+  { value: "SBIN.NS", label: "State Bank of India" }, { value: "LIC.NS", label: "LIC of India" },
+  { value: "HUL.NS", label: "Hindustan Unilever" }, { value: "ITC.NS", label: "ITC Limited" },
+  { value: "KOTAKBANK.NS", label: "Kotak Mahindra Bank" }, { value: "AXISBANK.NS", label: "Axis Bank Ltd." },
+  { value: "LT.NS", label: "Larsen & Toubro Ltd." }, { value: "SUNPHARMA.NS", label: "Sun Pharma" },
+  { value: "BAJFINANCE.NS", label: "Bajaj Finance" }, { value: "MARUTI.NS", label: "Maruti Suzuki" },
+  { value: "TITAN.NS", label: "Titan Company" }, { value: "ADANIENT.NS", label: "Adani Enterprises" },
+  { value: "ADANIPORTS.NS", label: "Adani Ports" }, { value: "TATAMOTORS.NS", label: "Tata Motors" },
+  { value: "COALINDIA.NS", label: "Coal India" }, { value: "NTPC.NS", label: "NTPC Limited" },
+  { value: "ULTRACEMCO.NS", label: "UltraTech Cement" }, { value: "ONGC.NS", label: "ONGC" },
+  { value: "ASIANPAINT.NS", label: "Asian Paints" }, { value: "GRASIM.NS", label: "Grasim Industries" },
+  { value: "JSWSTEEL.NS", label: "JSW Steel" }, { value: "NESTLEIND.NS", label: "Nestle India" },
+  { value: "M&M.NS", label: "M&M Limited" }, { value: "INDUSINDBK.NS", label: "IndusInd Bank" },
+  { value: "POWERGRID.NS", label: "Power Grid Corp." }, { value: "BPCL.NS", label: "BPCL" },
+  { value: "HCLTECH.NS", label: "HCL Technologies" }, { value: "DRREDDY.NS", label: "Dr Reddy's Labs" },
+  { value: "WIPRO.NS", label: "Wipro Limited" }, { value: "APOLLOHOSP.NS", label: "Apollo Hospitals" },
+  { value: "SBILIFE.NS", label: "SBI Life Insurance" }, { value: "BAJAJ-AUTO.NS", label: "Bajaj Auto" },
+  { value: "HEROMOTOCO.NS", label: "Hero MotoCorp" }, { value: "EICHERMOT.NS", label: "Eicher Motors" },
+  { value: "BRITANNIA.NS", label: "Britannia Industries" }, { value: "TATACONSUM.NS", label: "Tata Consumer Products" },
+  { value: "CIPLA.NS", label: "Cipla Limited" }, { value: "DIVISLAB.NS", label: "Divi's Laboratories" },
+  { value: "HDFCLIFE.NS", label: "HDFC Life" }, { value: "SHRIRAMFIN.NS", label: "Shriram Finance" },
+  { value: "TECHM.NS", label: "Tech Mahindra" }, { value: "BEL.NS", label: "Bharat Electronics" },
+  { value: "HAL.NS", label: "Hindustan Aeronautics" }, { value: "TRENT.NS", label: "Trent Limited" }
+];
+
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -63,6 +118,75 @@ function Login() {
           </button>
         </form>
       </div>
+    </div>
+  );
+}
+
+function SearchableStockSelector({ currentTicker, onSelect }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const filteredStocks = STOCKS.filter(stock => 
+    stock.label.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    stock.value.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const currentStock = STOCKS.find(s => s.value === currentTicker);
+
+  return (
+    <div className="relative group/select w-full md:w-[400px]" ref={dropdownRef}>
+      <p className="text-xs text-gray-500 font-black uppercase tracking-[0.4em] mb-3 text-right italic opacity-50">Search Asset</p>
+      <div 
+        onClick={() => setIsOpen(!isOpen)}
+        className="bg-black/80 text-white px-10 py-6 rounded-[2rem] border border-white/10 transition-all font-black cursor-pointer w-full text-2xl hover:border-blue-500 shadow-2xl tracking-tighter flex justify-between items-center"
+      >
+        <span>{currentStock ? currentStock.label : "Select Stock"}</span>
+        <svg className={`w-8 h-8 text-blue-500/70 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+
+      {isOpen && (
+        <div className="absolute top-full left-0 w-full mt-4 bg-black/90 border border-white/10 rounded-[2rem] shadow-[0_40px_80px_rgba(0,0,0,0.8)] z-[200] overflow-hidden backdrop-blur-3xl animate-in fade-in slide-in-from-top-4">
+          <div className="p-4 border-b border-white/10">
+            <input 
+              type="text" 
+              placeholder="Search ticker or name..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              autoFocus
+              className="w-full bg-white/5 text-white px-6 py-4 rounded-xl outline-none border border-white/10 focus:border-blue-500 transition-all font-bold text-lg"
+            />
+          </div>
+          <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+            {filteredStocks.map((stock) => (
+              <div 
+                key={stock.value}
+                onClick={() => { onSelect(stock.value); setIsOpen(false); setSearchTerm(''); }}
+                className={`px-10 py-5 hover:bg-blue-600 transition-all cursor-pointer flex justify-between items-center group/item ${currentTicker === stock.value ? 'bg-blue-600/30' : ''}`}
+              >
+                <div className="flex flex-col">
+                    <span className="text-xl font-black text-white group-hover/item:text-white">{stock.label}</span>
+                    <span className="text-xs font-black text-gray-500 uppercase tracking-widest group-hover/item:text-blue-200">{stock.value}</span>
+                </div>
+                {currentTicker === stock.value && <div className="w-3 h-3 bg-blue-500 rounded-full shadow-[0_0_10px_#3b82f6]"></div>}
+              </div>
+            ))}
+            {filteredStocks.length === 0 && (
+                <div className="p-10 text-center text-gray-600 font-black italic">NO ASSETS MATCHING SEARCH</div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -136,11 +260,11 @@ function Dashboard() {
 
   const fetchPortfolio = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/portfolio`);
+      const response = await axios.get(`${API_BASE_URL}/portfolio`, { params: { username } });
       setPortfolioValue(response.data.balance || 0);
       setOrderCount(response.data.orderCount || 0);
       
-      const ordersRes = await axios.get(`${API_BASE_URL}/orders`);
+      const ordersRes = await axios.get(`${API_BASE_URL}/orders`, { params: { username } });
       const allOrders = ordersRes.data;
       const tickerHoldings = allOrders.reduce((acc, order) => {
         if (order.ticker === ticker) {
@@ -154,7 +278,7 @@ function Dashboard() {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/orders`);
+      const response = await axios.get(`${API_BASE_URL}/orders`, { params: { username } });
       setOrders(response.data.reverse());
     } catch (err) { console.error('Error fetching orders:', err); }
   };
@@ -214,7 +338,8 @@ function Dashboard() {
         ticker: ticker,
         quantity: parseInt(quantity),
         price: currentPrice,
-        type: type
+        type: type,
+        username: username
       });
       fetchPortfolio();
       fetchOrders();
@@ -230,7 +355,7 @@ function Dashboard() {
       fetchPortfolio();
     }, 3000);
     return () => clearInterval(interval);
-  }, [ticker, period]);
+  }, [ticker, period, username]);
 
   return (
     <div className="min-h-screen bg-[#05070a] text-slate-100 font-sans selection:bg-blue-500/30">
@@ -295,122 +420,8 @@ function Dashboard() {
                   </button>
                 ))}
               </div>
-              <div className="relative group/select w-full md:w-[400px]">
-                <p className="text-xs text-gray-500 font-black uppercase tracking-[0.4em] mb-3 text-right italic opacity-50">Select Asset Class</p>
-                <select
-                  value={ticker}
-                  onChange={(e) => setTicker(e.target.value)}
-                  className="bg-black/80 text-white px-10 py-6 rounded-[2rem] outline-none border border-white/10 transition-all font-black appearance-none cursor-pointer w-full text-2xl hover:border-blue-500 shadow-2xl tracking-tighter"
-                >
-                  <optgroup label="EQUITIES - USA (FORTUNE 200)" className="bg-[#0a0d14] text-gray-500 font-black uppercase tracking-[0.2em] text-xs py-4">
-                    <option value="AAPL">Apple Inc. (AAPL)</option>
-                    <option value="MSFT">Microsoft Corp. (MSFT)</option>
-                    <option value="GOOGL">Alphabet Inc. (GOOGL)</option>
-                    <option value="AMZN">Amazon.com (AMZN)</option>
-                    <option value="NVDA">NVIDIA Corp. (NVDA)</option>
-                    <option value="META">Meta Platforms (META)</option>
-                    <option value="TSLA">Tesla Inc. (TSLA)</option>
-                    <option value="BRK-B">Berkshire Hathaway (BRK-B)</option>
-                    <option value="UNH">UnitedHealth Group (UNH)</option>
-                    <option value="LLY">Eli Lilly and Co (LLY)</option>
-                    <option value="JPM">JPMorgan Chase (JPM)</option>
-                    <option value="V">Visa Inc. (V)</option>
-                    <option value="XOM">Exxon Mobil (XOM)</option>
-                    <option value="MA">Mastercard Inc. (MA)</option>
-                    <option value="AVGO">Broadcom Inc. (AVGO)</option>
-                    <option value="HD">Home Depot (HD)</option>
-                    <option value="PG">Procter & Gamble (PG)</option>
-                    <option value="COST">Costco Wholesale (COST)</option>
-                    <option value="JNJ">Johnson & Johnson (JNJ)</option>
-                    <option value="ABBV">AbbVie Inc. (ABBV)</option>
-                    <option value="MRK">Merck & Co. (MRK)</option>
-                    <option value="CRM">Salesforce Inc. (CRM)</option>
-                    <option value="ADBE">Adobe Inc. (ADBE)</option>
-                    <option value="AMD">AMD Inc. (AMD)</option>
-                    <option value="CVX">Chevron Corp. (CVX)</option>
-                    <option value="NFLX">Netflix Inc. (NFLX)</option>
-                    <option value="PEP">PepsiCo Inc. (PEP)</option>
-                    <option value="KO">Coca-Cola Co. (KO)</option>
-                    <option value="TMO">Thermo Fisher (TMO)</option>
-                    <option value="WMT">Walmart Inc. (WMT)</option>
-                    <option value="MCD">McDonald's Corp. (MCD)</option>
-                    <option value="DIS">Walt Disney (DIS)</option>
-                    <option value="CSCO">Cisco Systems (CSCO)</option>
-                    <option value="TMUS">T-Mobile US (TMUS)</option>
-                    <option value="ABT">Abbott Labs (ABT)</option>
-                    <option value="BAC">Bank of America (BAC)</option>
-                    <option value="INTC">Intel Corp. (INTC)</option>
-                    <option value="PFE">Pfizer Inc. (PFE)</option>
-                    <option value="QCOM">Qualcomm Inc. (QCOM)</option>
-                    <option value="ORCL">Oracle Corp. (ORCL)</option>
-                    <option value="LIN">Linde plc (LIN)</option>
-                    <option value="VZ">Verizon (VZ)</option>
-                    <option value="CMCSA">Comcast (CMCSA)</option>
-                    <option value="INTU">Intuit Inc. (INTU)</option>
-                    <option value="AMAT">Applied Materials (AMAT)</option>
-                    <option value="TXN">Texas Instruments (TXN)</option>
-                    <option value="BKNG">Booking Holdings (BKNG)</option>
-                    <option value="UNP">Union Pacific (UNP)</option>
-                    <option value="LOW">Lowe's Companies (LOW)</option>
-                    <option value="SBUX">Starbucks (SBUX)</option>
-                  </optgroup>
-                  <optgroup label="EQUITIES - INDIA (NIFTY 50)" className="bg-[#0a0d14] text-gray-500 font-black uppercase tracking-[0.2em] text-xs py-4">
-                    <option value="RELIANCE.NS">Reliance Industries</option>
-                    <option value="TCS.NS">Tata Consultancy Services</option>
-                    <option value="HDFCBANK.NS">HDFC Bank Ltd.</option>
-                    <option value="BHARTIARTL.NS">Bharti Airtel Ltd.</option>
-                    <option value="ICICIBANK.NS">ICICI Bank Ltd.</option>
-                    <option value="INFY.NS">Infosys Limited</option>
-                    <option value="SBIN.NS">State Bank of India</option>
-                    <option value="LIC.NS">LIC of India</option>
-                    <option value="HUL.NS">Hindustan Unilever</option>
-                    <option value="ITC.NS">ITC Limited</option>
-                    <option value="KOTAKBANK.NS">Kotak Mahindra Bank</option>
-                    <option value="AXISBANK.NS">Axis Bank Ltd.</option>
-                    <option value="LT.NS">Larsen & Toubro Ltd.</option>
-                    <option value="SUNPHARMA.NS">Sun Pharma</option>
-                    <option value="BAJFINANCE.NS">Bajaj Finance</option>
-                    <option value="MARUTI.NS">Maruti Suzuki</option>
-                    <option value="TITAN.NS">Titan Company</option>
-                    <option value="ADANIENT.NS">Adani Enterprises</option>
-                    <option value="ADANIPORTS.NS">Adani Ports</option>
-                    <option value="TATAMOTORS.NS">Tata Motors</option>
-                    <option value="COALINDIA.NS">Coal India</option>
-                    <option value="NTPC.NS">NTPC Limited</option>
-                    <option value="ULTRACEMCO.NS">UltraTech Cement</option>
-                    <option value="ONGC.NS">ONGC</option>
-                    <option value="ASIANPAINT.NS">Asian Paints</option>
-                    <option value="GRASIM.NS">Grasim Industries</option>
-                    <option value="JSWSTEEL.NS">JSW Steel</option>
-                    <option value="NESTLEIND.NS">Nestle India</option>
-                    <option value="M&M.NS">M&M Limited</option>
-                    <option value="INDUSINDBK.NS">IndusInd Bank</option>
-                    <option value="POWERGRID.NS">Power Grid Corp.</option>
-                    <option value="BPCL.NS">BPCL</option>
-                    <option value="HCLTECH.NS">HCL Technologies</option>
-                    <option value="DRREDDY.NS">Dr Reddy's Labs</option>
-                    <option value="WIPRO.NS">Wipro Limited</option>
-                    <option value="APOLLOHOSP.NS">Apollo Hospitals</option>
-                    <option value="SBILIFE.NS">SBI Life Insurance</option>
-                    <option value="BAJAJ-AUTO.NS">Bajaj Auto</option>
-                    <option value="HEROMOTOCO.NS">Hero MotoCorp</option>
-                    <option value="EICHERMOT.NS">Eicher Motors</option>
-                    <option value="BRITANNIA.NS">Britannia Industries</option>
-                    <option value="TATACONSUM.NS">Tata Consumer Products</option>
-                    <option value="CIPLA.NS">Cipla Limited</option>
-                    <option value="DIVISLAB.NS">Divi's Laboratories</option>
-                    <option value="HDFCLIFE.NS">HDFC Life</option>
-                    <option value="SHRIRAMFIN.NS">Shriram Finance</option>
-                    <option value="TECHM.NS">Tech Mahindra</option>
-                    <option value="BEL.NS">Bharat Electronics</option>
-                    <option value="HAL.NS">Hindustan Aeronautics</option>
-                    <option value="TRENT.NS">Trent Limited</option>
-                  </optgroup>
-                </select>
-                <div className="absolute right-8 bottom-8 pointer-events-none text-blue-500/70 transition-transform group-hover/select:translate-y-1">
-                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M19 9l-7 7-7-7"></path></svg>
-                </div>
-              </div>
+              
+              <SearchableStockSelector currentTicker={ticker} onSelect={setTicker} />
             </div>
           </div>
           
@@ -519,7 +530,7 @@ function Dashboard() {
             </button>
             <button
               onClick={() => handleTrade('SELL')}
-              className="w-full bg-transparent hover:bg-red-500/10 text-red-500 border-2 border-red-500/30 py-8 rounded-[2rem] transition-all font-black text-3xl tracking-tighter active:scale-95 italic hover:border-red-500"
+              className="w-full bg-transparent hover:bg-red-500/10 text-red-500 border-2 border-red-500/20 py-8 rounded-[2rem] transition-all font-black text-3xl tracking-tighter active:scale-95 italic hover:border-red-500"
             >
               COMMIT SELL ORDER
             </button>

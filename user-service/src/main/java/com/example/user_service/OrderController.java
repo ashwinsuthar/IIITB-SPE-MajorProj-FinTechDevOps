@@ -15,19 +15,29 @@ public class OrderController {
     private OrderRepository orderRepository;
 
     @GetMapping("/orders")
-    public List<Order> getAllOrders() {
+    public List<Order> getAllOrders(@RequestParam(required = false) String username) {
+        if (username != null && !username.isEmpty()) {
+            return orderRepository.findByUsername(username);
+        }
         return orderRepository.findAll();
     }
 
     @PostMapping("/orders")
     public Order placeOrder(@RequestBody Order order) {
         if (order.getType() == null) order.setType("BUY");
+        if (order.getTimestamp() == null) order.setTimestamp(java.time.LocalDateTime.now());
         return orderRepository.save(order);
     }
 
     @GetMapping("/portfolio")
-    public Map<String, Object> getPortfolioSummary() {
-        List<Order> orders = orderRepository.findAll();
+    public Map<String, Object> getPortfolioSummary(@RequestParam(required = false) String username) {
+        List<Order> orders;
+        if (username != null && !username.isEmpty()) {
+            orders = orderRepository.findByUsername(username);
+        } else {
+            orders = orderRepository.findAll();
+        }
+        
         double initialBalance = 15000.0;
         double currentBalance = initialBalance;
 
@@ -43,7 +53,8 @@ public class OrderController {
         return Map.of(
             "balance", currentBalance,
             "orderCount", orders.size(),
-            "status", "Healthy"
+            "status", "Healthy",
+            "username", username != null ? username : "ALL"
         );
     }
 }
