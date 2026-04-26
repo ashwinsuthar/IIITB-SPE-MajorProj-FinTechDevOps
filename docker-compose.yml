@@ -3,6 +3,10 @@ version: '3.8'
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -11,6 +15,10 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:latest
+    deploy:
+      resources:
+        limits:
+          memory: 768M
     depends_on:
       - zookeeper
     ports:
@@ -25,6 +33,10 @@ services:
 
   postgres:
     image: postgres:15-alpine
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: rootpassword
@@ -36,11 +48,19 @@ services:
 
   redis:
     image: redis:7-alpine
+    deploy:
+      resources:
+        limits:
+          memory: 128M
     ports:
       - "6379:6379"
 
   vault:
     image: vault:1.13.2
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     ports:
       - "8200:8200"
     environment:
@@ -51,14 +71,23 @@ services:
 
   elasticsearch:
     image: elasticsearch:8.8.1
+    deploy:
+      resources:
+        limits:
+          memory: 1G
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ports:
       - "9200:9200"
 
   kibana:
     image: kibana:8.8.1
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     ports:
       - "5601:5601"
     environment:
@@ -68,6 +97,10 @@ services:
 
   logstash:
     image: logstash:8.8.1
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     ports:
       - "5044:5044"
     volumes:
