@@ -1,11 +1,20 @@
 from fastapi import FastAPI, Query
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import yfinance as yf
 from typing import List, Optional
 import datetime
 
 app = FastAPI(title="Price Prediction Service", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class PredictionRequest(BaseModel):
     ticker: str
