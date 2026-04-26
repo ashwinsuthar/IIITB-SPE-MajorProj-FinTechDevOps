@@ -1,7 +1,0 @@
-nohup: ignoring input
-Port 5173 is in use, trying another one...
-
-  VITE v4.5.14  ready in 635 ms
-
-  ➜  Local:   http://localhost:5174/
-  ➜  Network: http://172.16.130.229:5174/
