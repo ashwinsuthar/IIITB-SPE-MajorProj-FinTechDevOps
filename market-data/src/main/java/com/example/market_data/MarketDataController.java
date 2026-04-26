@@ -1,7 +1,9 @@
 package com.example.market_data;
 
 import org.springframework.web.bind.annotation.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,5 +52,22 @@ public class MarketDataController {
         response.put("price", Math.round(newPrice * 100.0) / 100.0);
         response.put("timestamp", System.currentTimeMillis());
         return response;
+    }
+
+    @GetMapping("/history/{ticker}")
+    public List<Map<String, Object>> getHistory(@PathVariable String ticker) {
+        double basePrice = basePrices.getOrDefault(ticker.toUpperCase(), 100.0);
+        List<Map<String, Object>> history = new ArrayList<>();
+        long now = System.currentTimeMillis();
+        
+        for (int i = 14; i >= 0; i--) {
+            Map<String, Object> point = new HashMap<>();
+            double price = basePrice + (random.nextDouble() - 0.5) * 0.05 * basePrice;
+            point.put("ticker", ticker.toUpperCase());
+            point.put("price", Math.round(price * 100.0) / 100.0);
+            point.put("timestamp", now - (i * 2000));
+            history.add(point);
+        }
+        return history;
     }
 }

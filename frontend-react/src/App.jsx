@@ -153,9 +153,24 @@ function Dashboard() {
 
       setCurrentPrice(response.data.price);
 
-      dataPointsRef.current = [...dataPointsRef.current, newPoint].slice(-15);
+      dataPointsRef.current = [...dataPointsRef.current, newPoint].slice(-20);
       setData([...dataPointsRef.current]);
     } catch (err) { console.error('Error fetching market data:', err); }
+  };
+
+  const fetchHistory = async () => {
+    try {
+      const response = await axios.get(`${MARKET_API_URL}/history/${ticker}`);
+      const historyData = response.data.map(point => ({
+        name: new Date(point.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        price: point.price
+      }));
+      dataPointsRef.current = historyData;
+      setData(historyData);
+      if (historyData.length > 0) {
+        setCurrentPrice(historyData[historyData.length - 1].price);
+      }
+    } catch (err) { console.error('Error fetching history:', err); }
   };
 
   const handleTrade = async (type) => {
@@ -174,9 +189,7 @@ function Dashboard() {
   useEffect(() => {
     fetchPortfolio();
     fetchOrders();
-    dataPointsRef.current = [];
-    setData([]);
-    updateMarketData();
+    fetchHistory();
     const interval = setInterval(() => {
       updateMarketData();
       fetchPortfolio();
