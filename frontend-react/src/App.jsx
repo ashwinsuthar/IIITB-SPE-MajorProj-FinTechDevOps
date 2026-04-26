@@ -60,61 +60,112 @@ const STOCKS = [
   { value: "HAL.NS", label: "Hindustan Aeronautics" }, { value: "TRENT.NS", label: "Trent Limited" }
 ];
 
-function Login() {
+function Auth() {
+  const [activeTab, setActiveTab] = useState('login');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const handleLogin = (e) => {
+  const validatePassword = (pass) => {
+    if (pass.length < 6) return "Password must be at least 6 characters";
+    if (!/^[a-zA-Z0-9]+$/.test(pass)) return "Password must be alphanumeric only (no special characters)";
+    return null;
+  };
+
+  const handleAction = async (e) => {
     e.preventDefault();
-    if (!password || password.length < 5) {
-      alert('Invalid password! Please enter at least 5 characters.');
-      return;
+    setError('');
+    setSuccess('');
+
+    if (activeTab === 'register') {
+      const passError = validatePassword(password);
+      if (passError) {
+        setError(passError);
+        return;
+      }
+      try {
+        await axios.post(`${API_BASE_URL}/auth/register`, { username, password });
+        setSuccess('Registration successful! Please login.');
+        setActiveTab('login');
+        setPassword('');
+      } catch (err) {
+        setError(err.response?.data?.message || 'Registration failed');
+      }
+    } else {
+      try {
+        const res = await axios.post(`${API_BASE_URL}/auth/login`, { username, password });
+        localStorage.setItem('username', res.data.username);
+        localStorage.setItem('lastLogin', new Date().toLocaleString());
+        window.location.href = '/dashboard';
+      } catch (err) {
+        setError(err.response?.data?.message || 'Invalid credentials');
+      }
     }
-    localStorage.setItem('username', username || 'Trader01');
-    localStorage.setItem('lastLogin', new Date().toLocaleString());
-    window.location.href = '/dashboard';
   };
 
   return (
-    <div className="min-h-screen bg-[#05070a] text-white flex items-center justify-center p-4 font-sans text-xl selection:bg-blue-500/30">
-      <div className="bg-[#0a0d14] p-12 rounded-[3rem] shadow-2xl w-full max-w-lg border border-white/5 backdrop-blur-3xl relative overflow-hidden">
+    <div className="min-h-screen bg-[#05070a] text-white flex items-center justify-center p-4 font-sans selection:bg-blue-500/30">
+      <div className="bg-[#0a0d14] p-10 rounded-[3rem] shadow-2xl w-full max-w-lg border border-white/5 backdrop-blur-3xl relative overflow-hidden flex flex-col">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
-        <div className="flex flex-col items-center mb-12">
-          <div className="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center mb-6 shadow-2xl shadow-blue-500/30">
-            <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+        
+        <div className="flex flex-col items-center mb-10">
+          <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-4 shadow-xl shadow-blue-500/20">
+            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
           </div>
-          <h2 className="text-5xl font-black text-white tracking-tighter">Trading <span className="text-blue-500 text-4xl italic">Pro</span></h2>
-          <p className="text-gray-400 mt-3 font-semibold italic text-lg">Institutional Terminal Login</p>
+          <h2 className="text-4xl font-black text-white tracking-tighter italic">Trading <span className="text-blue-500 italic">Pro</span></h2>
+          <p className="text-gray-500 mt-2 font-bold italic text-sm uppercase tracking-widest">Institutional Access Portal</p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-8">
-          <div className="space-y-3">
-            <label className="block text-xs font-black text-gray-500 uppercase tracking-[0.3em] ml-1">Operator Identifier</label>
+        <div className="flex bg-black/40 p-1.5 rounded-2xl mb-8 border border-white/5 shadow-inner">
+            <button 
+                onClick={() => { setActiveTab('login'); setError(''); setSuccess(''); }}
+                className={`flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'login' ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20' : 'text-gray-600 hover:text-white'}`}
+            >
+                Login
+            </button>
+            <button 
+                onClick={() => { setActiveTab('register'); setError(''); setSuccess(''); }}
+                className={`flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'register' ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20' : 'text-gray-600 hover:text-white'}`}
+            >
+                Register
+            </button>
+        </div>
+
+        {error && <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl mb-6 text-sm font-bold text-center animate-pulse">{error}</div>}
+        {success && <div className="bg-green-500/10 border border-green-500/20 text-green-400 p-4 rounded-xl mb-6 text-sm font-bold text-center">{success}</div>}
+
+        <form onSubmit={handleAction} className="space-y-6">
+          <div className="space-y-2">
+            <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1 italic font-sans">Operator Identifier</label>
             <input
               type="text"
-              placeholder="Enter Username"
+              placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-white/5 text-white px-8 py-5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 border border-white/10 transition-all placeholder:text-gray-700 font-bold text-xl"
+              className="w-full bg-white/5 text-white px-6 py-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 border border-white/10 transition-all placeholder:text-gray-700 font-bold text-lg"
               required
             />
           </div>
-          <div className="space-y-3">
-            <label className="block text-xs font-black text-gray-500 uppercase tracking-[0.3em] ml-1">Security Access Key</label>
+          <div className="space-y-2">
+            <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1 italic font-sans">Access Key</label>
             <input
               type="password"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-white/5 text-white px-8 py-5 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 border border-white/10 transition-all placeholder:text-gray-700 font-bold text-xl"
+              className="w-full bg-white/5 text-white px-6 py-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 border border-white/10 transition-all placeholder:text-gray-700 font-bold text-lg"
               required
             />
+            {activeTab === 'register' && (
+                <p className="text-[10px] text-gray-600 font-bold mt-2 px-2 italic uppercase tracking-tighter">Min 6 chars. Alphanumeric only. No special chars.</p>
+            )}
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-500 text-white py-6 rounded-3xl transition-all font-black text-2xl shadow-2xl shadow-blue-600/30 active:scale-[0.98] mt-4 italic tracking-tighter"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white py-5 rounded-2xl transition-all font-black text-xl shadow-2xl shadow-blue-600/30 active:scale-[0.98] mt-4 italic tracking-widest uppercase"
           >
-            AUTHORIZE SESSION
+            {activeTab === 'login' ? 'Authorize Session' : 'Create Credentials'}
           </button>
         </form>
       </div>
@@ -122,71 +173,70 @@ function Login() {
   );
 }
 
-function SearchableStockSelector({ currentTicker, onSelect }) {
+function AssetSearchModal({ isOpen, onClose, currentTicker, onSelect }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  
+  if (!isOpen) return null;
 
   const filteredStocks = STOCKS.filter(stock => 
     stock.label.toLowerCase().includes(searchTerm.toLowerCase()) || 
     stock.value.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const currentStock = STOCKS.find(s => s.value === currentTicker);
-
   return (
-    <div className="relative group/select w-full md:w-[400px]" ref={dropdownRef}>
-      <p className="text-xs text-gray-500 font-black uppercase tracking-[0.4em] mb-3 text-right italic opacity-50">Search Asset</p>
-      <div 
-        onClick={() => setIsOpen(!isOpen)}
-        className="bg-black/80 text-white px-10 py-6 rounded-[2rem] border border-white/10 transition-all font-black cursor-pointer w-full text-2xl hover:border-blue-500 shadow-2xl tracking-tighter flex justify-between items-center"
-      >
-        <span>{currentStock ? currentStock.label : "Select Stock"}</span>
-        <svg className={`w-8 h-8 text-blue-500/70 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M19 9l-7 7-7-7"></path></svg>
-      </div>
-
-      {isOpen && (
-        <div className="absolute top-full left-0 w-full mt-4 bg-black/90 border border-white/10 rounded-[2rem] shadow-[0_40px_80px_rgba(0,0,0,0.8)] z-[200] overflow-hidden backdrop-blur-3xl animate-in fade-in slide-in-from-top-4">
-          <div className="p-4 border-b border-white/10">
-            <input 
-              type="text" 
-              placeholder="Search ticker or name..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              autoFocus
-              className="w-full bg-white/5 text-white px-6 py-4 rounded-xl outline-none border border-white/10 focus:border-blue-500 transition-all font-bold text-lg"
-            />
-          </div>
-          <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+    <div className="fixed inset-0 bg-[#05070a]/98 backdrop-blur-3xl flex items-center justify-center z-[200] p-4 animate-in zoom-in-95 duration-200">
+      <div className="bg-[#0a0d14] border border-white/10 rounded-[4rem] w-full max-w-5xl max-h-[85vh] overflow-hidden flex flex-col shadow-[0_0_150px_rgba(59,130,246,0.15)]">
+        <div className="p-12 border-b border-white/5 bg-white/[0.02]">
+            <div className="flex justify-between items-center mb-10">
+                <div>
+                    <h2 className="text-6xl font-black text-white tracking-tighter italic">Asset Discovery</h2>
+                    <p className="text-xl text-gray-500 mt-4 uppercase tracking-[0.4em] font-black italic opacity-60">Global Markets (NSE, BSE, NYSE, NASDAQ)</p>
+                </div>
+                <button onClick={onClose} className="p-5 hover:bg-white/10 rounded-3xl transition-all border border-transparent hover:border-white/10 active:scale-90">
+                    <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div className="relative group">
+                <div className="absolute inset-y-0 left-8 flex items-center pointer-events-none">
+                    <svg className="w-10 h-10 text-blue-500 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <input 
+                    type="text" 
+                    placeholder="Enter Stock Ticker or Company Name..." 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    autoFocus
+                    className="w-full bg-black/50 text-white pl-24 pr-12 py-8 rounded-[2.5rem] outline-none border-2 border-white/5 focus:border-blue-500/50 transition-all font-black text-4xl placeholder:text-gray-800 shadow-inner"
+                />
+            </div>
+        </div>
+        
+        <div className="flex-1 overflow-y-auto p-8 scrollbar-thin scrollbar-thumb-blue-600/20 scrollbar-track-transparent">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredStocks.map((stock) => (
               <div 
                 key={stock.value}
-                onClick={() => { onSelect(stock.value); setIsOpen(false); setSearchTerm(''); }}
-                className={`px-10 py-5 hover:bg-blue-600 transition-all cursor-pointer flex justify-between items-center group/item ${currentTicker === stock.value ? 'bg-blue-600/30' : ''}`}
+                onClick={() => { onSelect(stock.value); onClose(); setSearchTerm(''); }}
+                className={`p-8 rounded-[2.5rem] transition-all cursor-pointer flex items-center space-x-6 border group/item ${currentTicker === stock.value ? 'bg-blue-600/20 border-blue-500/50' : 'bg-white/[0.03] border-white/5 hover:bg-white/[0.08] hover:border-white/10'}`}
               >
-                <div className="flex flex-col">
-                    <span className="text-xl font-black text-white group-hover/item:text-white">{stock.label}</span>
-                    <span className="text-xs font-black text-gray-500 uppercase tracking-widest group-hover/item:text-blue-200">{stock.value}</span>
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg transition-transform group-hover/item:scale-110 ${currentTicker === stock.value ? 'bg-blue-600 text-white' : 'bg-black text-blue-500'}`}>
+                    {stock.value.substring(0, 2)}
                 </div>
-                {currentTicker === stock.value && <div className="w-3 h-3 bg-blue-500 rounded-full shadow-[0_0_10px_#3b82f6]"></div>}
+                <div className="flex-1 truncate">
+                    <p className="text-2xl font-black text-white group-hover/item:text-blue-400 transition-colors truncate tracking-tight">{stock.label}</p>
+                    <p className="text-xs font-black text-gray-500 uppercase tracking-widest mt-1 group-hover/item:text-gray-400">{stock.value}</p>
+                </div>
               </div>
             ))}
-            {filteredStocks.length === 0 && (
-                <div className="p-10 text-center text-gray-600 font-black italic">NO ASSETS MATCHING SEARCH</div>
-            )}
           </div>
+          {filteredStocks.length === 0 && (
+              <div className="py-40 text-center">
+                  <p className="text-gray-700 font-black italic text-5xl tracking-tighter opacity-40 uppercase">NO ASSETS FOUND</p>
+                  <p className="text-gray-800 font-black text-sm mt-6 uppercase tracking-[0.5em]">Refine your search parameters</p>
+              </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -194,12 +244,12 @@ function SearchableStockSelector({ currentTicker, onSelect }) {
 function TradeHistoryModal({ isOpen, onClose, orders }) {
   if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 bg-[#05070a]/95 backdrop-blur-2xl flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300">
+    <div className="fixed inset-0 bg-[#05070a]/95 backdrop-blur-2xl flex items-center justify-center z-[200] p-4 animate-in fade-in duration-300">
       <div className="bg-[#0a0d14] border border-white/10 rounded-[3rem] w-full max-w-6xl max-h-[85vh] overflow-hidden flex flex-col shadow-[0_0_120px_rgba(0,0,0,0.9)] relative">
         <div className="p-12 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
           <div>
             <h2 className="text-5xl font-black text-white tracking-tighter italic">Trade Execution Logs</h2>
-            <p className="text-xs text-gray-500 mt-3 uppercase tracking-[0.4em] font-black italic">Immutable Audit History</p>
+            <p className="text-xl text-gray-500 mt-3 uppercase tracking-[0.4em] font-black italic opacity-60">Immutable Audit History</p>
           </div>
           <button onClick={onClose} className="p-4 hover:bg-white/10 rounded-2xl transition-all border border-transparent hover:border-white/10 group active:scale-90">
             <svg className="w-10 h-10 text-gray-500 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -209,17 +259,17 @@ function TradeHistoryModal({ isOpen, onClose, orders }) {
           <table className="w-full text-left border-separate border-spacing-y-6">
             <thead>
               <tr>
-                <th className="px-8 py-2 text-xs font-black text-gray-500 uppercase tracking-[0.3em] italic">Ticker</th>
-                <th className="px-8 py-2 text-xs font-black text-gray-500 uppercase tracking-[0.3em] italic">Action</th>
-                <th className="px-8 py-2 text-xs font-black text-gray-500 uppercase tracking-[0.3em] italic">Quantity</th>
-                <th className="px-8 py-2 text-xs font-black text-gray-500 uppercase tracking-[0.3em] italic">Settle Price</th>
-                <th className="px-8 py-2 text-xs font-black text-gray-500 uppercase tracking-[0.3em] italic text-right">Total Value</th>
+                <th className="px-8 py-2 text-base font-black text-gray-500 uppercase tracking-[0.3em] italic">Ticker</th>
+                <th className="px-8 py-2 text-base font-black text-gray-500 uppercase tracking-[0.3em] italic">Action</th>
+                <th className="px-8 py-2 text-base font-black text-gray-500 uppercase tracking-[0.3em] italic">Quantity</th>
+                <th className="px-8 py-2 text-base font-black text-gray-500 uppercase tracking-[0.3em] italic">Settle Price</th>
+                <th className="px-8 py-2 text-base font-black text-gray-500 uppercase tracking-[0.3em] italic text-right">Total Value</th>
               </tr>
             </thead>
             <tbody>
               {orders.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="text-center py-40 text-gray-700 font-black italic text-3xl tracking-tight opacity-40">NO RECORDS FOUND.</td>
+                  <td colSpan="5" className="text-center py-40 text-gray-700 font-black italic text-4xl tracking-tight opacity-40 uppercase">NO RECORDS FOUND.</td>
                 </tr>
               ) : (
                 orders.map((order, idx) => (
@@ -227,7 +277,7 @@ function TradeHistoryModal({ isOpen, onClose, orders }) {
                     <td className="px-8 py-8 rounded-l-3xl font-black text-white text-2xl tracking-tighter">{order.ticker}</td>
                     <td className={`px-8 py-8 font-black uppercase italic tracking-widest text-lg ${order.type === 'BUY' ? 'text-blue-400' : 'text-red-400'}`}>{order.type}</td>
                     <td className="px-8 py-8 font-black text-gray-400 font-mono text-xl">{order.quantity}</td>
-                    <td className="px-8 py-8 font-mono text-white font-bold text-xl">${order.price?.toFixed(2)}</td>
+                    <td className="px-8 py-8 font-mono text-white font-bold text-xl tracking-tighter">${order.price?.toFixed(2)}</td>
                     <td className="px-8 py-8 rounded-r-3xl font-black text-gray-300 text-right font-mono text-2xl tracking-tight">${(order.price * order.quantity).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
                   </tr>
                 ))
@@ -251,6 +301,7 @@ function Dashboard() {
   const [quantity, setQuantity] = useState(1);
   const [period, setPeriod] = useState('1d');
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   
   const [username] = useState(localStorage.getItem('username') || 'Trader');
@@ -363,19 +414,19 @@ function Dashboard() {
         <div>
           <div className="flex items-center space-x-4">
             <h1 className="text-5xl font-black tracking-tighter text-white">Institutional Terminal</h1>
-            <span className="bg-blue-600/30 text-blue-400 text-sm font-black px-4 py-1.5 rounded-full border border-blue-500/40">v2.5 PRO</span>
+            <span className="bg-blue-600/30 text-blue-400 text-[10px] font-black px-4 py-1.5 rounded-full border border-blue-500/40 tracking-widest uppercase">v2.5 PRO</span>
           </div>
           <p className="text-gray-500 font-bold text-xl italic mt-2 opacity-80">Real-time Global Market Intelligence & Enterprise Execution</p>
         </div>
         <div className="flex items-center space-x-12">
           <div className="text-right hidden sm:block">
-            <p className="text-gray-500 text-xs font-black uppercase tracking-[0.5em] mb-1 italic opacity-40">Operator Rank: High Frequency</p>
-            <p className="text-white font-black text-3xl tracking-tighter uppercase">{username}</p>
-            <p className="text-gray-600 text-xs font-black uppercase mt-2 tracking-widest">L_LOG: {lastLogin}</p>
+            <p className="text-sm text-gray-500 font-black uppercase tracking-[0.5em] mb-1 italic opacity-60">Operator Rank: High Frequency</p>
+            <p className="text-white font-black text-4xl tracking-tighter uppercase">{username}</p>
+            <p className="text-gray-600 text-xs font-black uppercase mt-2 tracking-widest font-mono opacity-80">L_LOG: {lastLogin}</p>
           </div>
           <button
             onClick={() => { localStorage.clear(); window.location.href = '/login'; }}
-            className="bg-red-500/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-500/30 hover:border-red-500 px-10 py-5 rounded-2xl transition-all font-black text-sm uppercase tracking-widest active:scale-95 shadow-2xl shadow-red-500/0 hover:shadow-red-500/30"
+            className="bg-red-500/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-500/30 hover:border-red-500 px-10 py-5 rounded-2xl transition-all font-black text-xs uppercase tracking-widest active:scale-95 shadow-2xl shadow-red-500/0 hover:shadow-red-500/30"
           >
             TERMINATE SESSION
           </button>
@@ -403,7 +454,7 @@ function Dashboard() {
                     {currentPrice > 0 ? `$${currentPrice.toFixed(2)}` : 'FETCHING...'}
                 </span>
                 <div className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl">
-                    <span className="text-gray-400 text-lg font-black uppercase tracking-[0.3em] font-mono">{ticker}</span>
+                    <span className="text-gray-400 text-2xl font-black uppercase tracking-[0.3em] font-mono">{ticker}</span>
                 </div>
               </div>
             </div>
@@ -421,14 +472,23 @@ function Dashboard() {
                 ))}
               </div>
               
-              <SearchableStockSelector currentTicker={ticker} onSelect={setTicker} />
+              <div className="relative group/select w-full md:w-[400px]">
+                <p className="text-2xl text-gray-500 font-black uppercase tracking-[0.4em] mb-4 text-right italic font-sans">Search Asset</p>
+                <button 
+                  onClick={() => setIsSearchOpen(true)}
+                  className="bg-black/80 text-white px-10 py-6 rounded-[2rem] border border-white/10 transition-all font-black cursor-pointer w-full text-3xl hover:border-blue-500 shadow-2xl tracking-tighter flex justify-between items-center group/btn active:scale-95"
+                >
+                  <span className="truncate">{STOCKS.find(s => s.value === ticker)?.label || "Discover Assets"}</span>
+                  <svg className="w-10 h-10 text-blue-500 group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </button>
+              </div>
             </div>
           </div>
           
           <div className="h-[520px] w-full mt-8 relative">
             {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm z-10 rounded-3xl">
-                    <p className="text-blue-500 font-black text-2xl animate-pulse italic tracking-widest">LOADING HISTORICAL DATA...</p>
+                    <p className="text-blue-500 font-black text-4xl animate-pulse italic tracking-widest">LOADING HISTORICAL DATA...</p>
                 </div>
             )}
             <ResponsiveContainer width="100%" height="100%">
@@ -470,24 +530,24 @@ function Dashboard() {
           <div className="relative z-10">
             <div className="flex justify-between items-center mb-12">
               <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase opacity-90">Execution Engine</h2>
-              <div className="p-4 bg-white/5 rounded-2xl border border-white/10 group-hover:border-blue-500 transition-colors shadow-2xl">
+              <div className="p-4 bg-white/5 rounded-2xl border border-white/10 transition-colors shadow-2xl">
                 <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
               </div>
             </div>
 
             <div className="space-y-6 mb-16">
-              <p className="text-xs font-black text-gray-500 uppercase tracking-[0.5em] ml-2 italic">Net Account Liquidity</p>
+              <p className="text-xl font-black text-gray-500 uppercase tracking-[0.5em] ml-2 italic">Net Account Liquidity</p>
               <div className="text-7xl font-black text-green-400 tracking-tighter drop-shadow-[0_0_30px_rgba(74,222,128,0.3)]">
-                <span className="text-4xl mr-2 opacity-60">$</span>{portfolioValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                <span className="text-4xl mr-2 opacity-60 font-mono">$</span>{portfolioValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
               </div>
             </div>
 
             <div className="space-y-10">
-                <div className="bg-white/[0.03] rounded-[3rem] p-10 border border-white/10 shadow-2xl">
+                <div className="bg-white/[0.03] rounded-[3rem] p-10 border border-white/10 shadow-2xl hover:bg-white/[0.05] transition-all group">
                     <div className="flex justify-between items-end mb-8">
                         <div>
-                            <p className="text-xs font-black text-gray-600 uppercase tracking-[0.3em] italic mb-3">Inventory Profile</p>
-                            <p className="text-4xl font-black text-white italic tracking-tighter">{holdings} <span className="text-blue-500 text-base font-black uppercase tracking-widest opacity-90">{ticker} Units</span></p>
+                            <p className="text-xl font-black text-gray-600 uppercase tracking-[0.3em] italic mb-4">Inventory Profile</p>
+                            <p className="text-5xl font-black text-white italic tracking-tighter">{holdings} <span className="text-blue-500 text-sm font-black uppercase tracking-widest opacity-90">{ticker} Units</span></p>
                         </div>
                         <button
                             onClick={() => setIsHistoryOpen(true)}
@@ -496,13 +556,13 @@ function Dashboard() {
                             Log Audit
                         </button>
                     </div>
-                    <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                        <div className="h-full bg-blue-500 shadow-[0_0_20px_#3b82f6]" style={{ width: `${Math.min((holdings / 100) * 100, 100)}%` }}></div>
+                    <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div className="h-full bg-blue-500 shadow-[0_0_20px_#3b82f6] transition-all duration-1000" style={{ width: `${Math.min((holdings / 100) * 100, 100)}%` }}></div>
                     </div>
                 </div>
 
                 <div className="bg-white/5 rounded-[3rem] p-10 border border-white/10 space-y-8 shadow-inner">
-                    <p className="text-xs font-black text-gray-600 uppercase tracking-[0.4em] italic mb-4">Transmission Payload</p>
+                    <p className="text-xl font-black text-gray-600 uppercase tracking-[0.4em] italic mb-6">Transmission Payload</p>
                     <div className="flex items-center justify-between">
                         <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-16 h-16 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center font-black text-3xl hover:bg-white/20 transition-all shadow-2xl active:scale-90">-</button>
                         <div className="flex flex-col items-center">
@@ -510,7 +570,7 @@ function Dashboard() {
                                 type="number" 
                                 value={quantity} 
                                 onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
-                                className="w-32 bg-transparent text-center text-6xl font-black focus:outline-none tracking-tighter text-blue-400"
+                                className="w-32 bg-transparent text-center text-7xl font-black focus:outline-none tracking-tighter text-blue-400"
                             />
                             <span className="text-xs font-black text-gray-700 uppercase tracking-widest mt-2">Units</span>
                         </div>
@@ -523,21 +583,27 @@ function Dashboard() {
           <div className="mt-16 space-y-6 relative z-10">
             <button
               onClick={() => handleTrade('BUY')}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white py-8 rounded-[2rem] transition-all font-black text-3xl tracking-tighter shadow-[0_30px_70px_-20px_rgba(59,130,246,0.6)] active:scale-95 italic group overflow-hidden"
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white py-8 rounded-[2rem] transition-all font-black text-3xl tracking-tighter shadow-[0_30px_70px_-20px_rgba(59,130,246,0.6)] active:scale-95 italic group overflow-hidden uppercase"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
-              COMMIT BUY ORDER
+              Commit Buy Order
             </button>
             <button
               onClick={() => handleTrade('SELL')}
-              className="w-full bg-transparent hover:bg-red-500/10 text-red-500 border-2 border-red-500/20 py-8 rounded-[2rem] transition-all font-black text-3xl tracking-tighter active:scale-95 italic hover:border-red-500"
+              className="w-full bg-transparent hover:bg-red-500/10 text-red-500 border-2 border-red-500/20 py-8 rounded-[2rem] transition-all font-black text-3xl tracking-tighter active:scale-95 italic hover:border-red-500 uppercase"
             >
-              COMMIT SELL ORDER
+              Commit Sell Order
             </button>
           </div>
         </section>
       </main>
 
+      <AssetSearchModal 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+        currentTicker={ticker} 
+        onSelect={setTicker} 
+      />
       <TradeHistoryModal isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} orders={orders} />
     </div>
   );
@@ -546,7 +612,7 @@ function Dashboard() {
 function App() {
   const path = window.location.pathname;
   if (path === '/login' || path === '/') {
-    return <Login />;
+    return <Auth />;
   }
   return <Dashboard />;
 }
