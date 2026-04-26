@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-execution-service
+  namespace: stock-portfolio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-execution-service
+  template:
+    metadata:
+      labels:
+        app: order-execution-service
+    spec:
+      containers:
+      - name: order-execution-service
+        image: myrepo/order-execution-service:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: "250m"
+          limits:
+            cpu: "500m"
+        env:
+        - name: VAULT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: vault-keys
+              key: token
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vault-keys
+              key: db_password
