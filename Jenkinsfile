@@ -50,7 +50,7 @@ pipeline {
                             def service = javaServices[i]
                             dir(service) {
                                 echo "Dockerizing ${service}..."
-                                def javaImage = docker.build("${env.DOCKER_REPO}:spestocksys-${service}")
+                                def javaImage = docker.build("${env.DOCKER_REPO}:spestocksys-${service}", "--no-cache .")
                                 javaImage.push()
                             }
                         }
@@ -58,14 +58,14 @@ pipeline {
                         // 2. Python Service
                         dir('price-prediction') {
                             echo "Dockerizing price-prediction..."
-                            def pythonImage = docker.build("${env.DOCKER_REPO}:spestocksys-price-prediction")
+                            def pythonImage = docker.build("${env.DOCKER_REPO}:spestocksys-price-prediction", "--no-cache .")
                             pythonImage.push()
                         }
                         
                         // 3. React Frontend Service
                         dir('frontend-react') {
                             echo "Dockerizing frontend-react..."
-                            def reactImage = docker.build("${env.DOCKER_REPO}:spestocksys-frontend-react")
+                            def reactImage = docker.build("${env.DOCKER_REPO}:spestocksys-frontend-react", "--no-cache .")
                             reactImage.push()
                         }
                     }
