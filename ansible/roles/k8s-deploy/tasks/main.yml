@@ -1,0 +1,22 @@
+---
+- name: Ensure Kubernetes namespace exists
+  k8s:
+    name: stock-portfolio
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Apply Vault configuration
+  k8s:
+    state: present
+    definition: "{{ lookup('file', '../k8s/vault-secret.yaml') | from_yaml }}"
+
+- name: Deploy Microservices
+  k8s:
+    state: present
+    definition: "{{ lookup('file', '../k8s/deployment.yaml') | from_yaml }}"
+
+- name: Apply Horizontal Pod Autoscaler (HPA)
+  k8s:
+    state: present
+    definition: "{{ lookup('file', '../k8s/hpa.yaml') | from_yaml }}"
