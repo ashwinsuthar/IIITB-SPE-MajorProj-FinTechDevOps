@@ -12,6 +12,8 @@ services:
   api-gateway:
     image: ashwins1/spe-stocksys-mjproj:spestocksys-api-gateway
     network_mode: "host"
+    environment:
+      - SERVER_PORT=8081
 
   user-service:
     image: ashwins1/spe-stocksys-mjproj:spestocksys-user-service

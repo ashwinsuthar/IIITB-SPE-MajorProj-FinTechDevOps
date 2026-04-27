@@ -7,7 +7,6 @@ pipeline {
         githubPush()
     }
 //for now just comment below for running with no TBW around 10 GB  1hr success build
-/*
     environment {
         DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
         GITHUB_CREDS_ID = 'github-pat-credentials'
@@ -16,6 +15,7 @@ pipeline {
     }
 
     stages {
+/*
         stage('Checkout') {
             steps {
                 git branch: 'main', 
@@ -85,7 +85,6 @@ pipeline {
             }
         }
 
-
 //Pushing Docker images post successful local build run Success #11 (Apr 28, 2026, 2:58:08 AM)
 /*
         stage('Push Docker Images') {
@@ -104,7 +103,6 @@ pipeline {
                 }
             }
         }
-    }
 */
-
+    }
 }
