@@ -8,7 +8,7 @@ pipeline {
     }
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
+        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
         GITHUB_CREDS_ID = 'github-pat-credentials'
         DOCKER_REPO = 'ashwins1/spe-stocksys-mjproj'
         GIT_URL = 'https://github.com/ashwinsuthar/IIITB-SPE-MajorProj-FinTechDevOps.git'
