@@ -12,3 +12,13 @@ INSERT INTO dummy_stock_portfolio (user_id, stock_symbol, quantity, purchase_pri
 ('user123', 'GOOGL', 10, 2800.00),
 ('tester99', 'MSFT', 100, 310.50),
 ('tester99', 'TSLA', 25, 220.75);
+
+CREATE TABLE IF NOT EXISTS users (
+    id VARCHAR(50) PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+INSERT INTO users (id, username, password) VALUES 
+('admin-uuid-1234-abcd', 'admin', 'admin123')
+ON CONFLICT (username) DO NOTHING;
