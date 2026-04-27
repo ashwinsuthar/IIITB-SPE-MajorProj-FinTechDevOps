@@ -246,6 +246,7 @@ function TradeHistoryModal({ isOpen, onClose, orders }) {
   return (
     <div className="fixed inset-0 bg-[#05070a]/95 backdrop-blur-2xl flex items-center justify-center z-[200] p-4 animate-in fade-in duration-300">
       <div className="bg-[#0a0d14] border border-white/10 rounded-[3rem] w-full max-w-6xl max-h-[85vh] overflow-hidden flex flex-col shadow-[0_0_120px_rgba(0,0,0,0.9)] relative">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
         <div className="p-12 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
           <div>
             <h2 className="text-5xl font-black text-white tracking-tighter italic">Trade Execution Logs</h2>
@@ -290,6 +291,114 @@ function TradeHistoryModal({ isOpen, onClose, orders }) {
   );
 }
 
+function HoldingsModal({ isOpen, onClose, orders }) {
+  if (!isOpen) return null;
+
+  const holdingsMap = orders.reduce((acc, order) => {
+    if (!acc[order.ticker]) acc[order.ticker] = 0;
+    acc[order.ticker] += order.type === 'BUY' ? order.quantity : -order.quantity;
+    return acc;
+  }, {});
+
+  const holdingsList = Object.entries(holdingsMap)
+    .filter(([_, qty]) => qty > 0)
+    .map(([ticker, qty]) => ({ ticker, quantity: qty }));
+
+  return (
+    <div className="fixed inset-0 bg-[#05070a]/95 backdrop-blur-2xl flex items-center justify-center z-[200] p-4 animate-in zoom-in-95 duration-200">
+      <div className="bg-[#0a0d14] border border-white/10 rounded-[4rem] w-full max-w-4xl max-h-[80vh] overflow-hidden flex flex-col shadow-2xl relative">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent"></div>
+        <div className="p-12 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+          <div>
+            <h2 className="text-5xl font-black text-white tracking-tighter italic">Current Holdings</h2>
+            <p className="text-xl text-gray-500 mt-3 uppercase tracking-[0.4em] font-black italic opacity-60">Real-time Inventory</p>
+          </div>
+          <button onClick={onClose} className="p-4 hover:bg-white/10 rounded-2xl transition-all border border-transparent hover:border-white/10 group active:scale-90">
+            <svg className="w-10 h-10 text-gray-500 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-12">
+          {holdingsList.length === 0 ? (
+            <div className="py-40 text-center text-gray-700 font-black italic text-4xl tracking-tight opacity-40 uppercase">NO ACTIVE POSITIONS.</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {holdingsList.map((holding) => (
+                <div key={holding.ticker} className="bg-white/[0.04] p-8 rounded-3xl border border-white/5 flex justify-between items-center hover:bg-white/[0.08] transition-all">
+                  <div>
+                    <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1">Asset Ticker</p>
+                    <p className="text-3xl font-black text-white tracking-tighter">{holding.ticker}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs font-black text-gray-500 uppercase tracking-widest mb-1">Net Units</p>
+                    <p className="text-4xl font-black text-blue-500 italic tracking-tighter">{holding.quantity}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ConfirmationModal({ isOpen, onConfirm, onCancel, data }) {
+  if (!isOpen) return null;
+  const { type, quantity, ticker, price } = data;
+  const totalValue = (quantity * price).toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+  return (
+    <div className="fixed inset-0 bg-[#05070a]/98 backdrop-blur-3xl flex items-center justify-center z-[300] p-4 animate-in fade-in duration-200">
+      <div className="bg-[#0a0d14] border border-white/10 rounded-[3rem] w-full max-w-lg p-12 shadow-2xl relative overflow-hidden">
+        <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-${type === 'BUY' ? 'blue' : 'red'}-500 to-transparent`}></div>
+        <div className="text-center space-y-8">
+          <div className={`w-20 h-20 mx-auto rounded-3xl flex items-center justify-center ${type === 'BUY' ? 'bg-blue-600/20' : 'bg-red-600/20'}`}>
+            <svg className={`w-12 h-12 ${type === 'BUY' ? 'text-blue-500' : 'text-red-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-4xl font-black text-white tracking-tighter italic uppercase mb-2">Execute Order?</h2>
+            <p className="text-sm text-gray-500 font-bold uppercase tracking-widest">Awaiting Operator Confirmation</p>
+          </div>
+          <div className="bg-white/5 p-8 rounded-3xl border border-white/5 space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-black text-gray-500 uppercase tracking-widest italic">Operation Type</span>
+              <span className={`text-xl font-black italic ${type === 'BUY' ? 'text-blue-400' : 'text-red-400'}`}>{type}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-black text-gray-500 uppercase tracking-widest italic">Asset Ticker</span>
+              <span className="text-xl font-black text-white">{ticker}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-black text-gray-500 uppercase tracking-widest italic">Intensity</span>
+              <span className="text-xl font-black text-white">{quantity} Units</span>
+            </div>
+            <div className="pt-4 border-t border-white/5 flex justify-between items-center">
+              <span className="text-xs font-black text-gray-400 uppercase tracking-widest italic">Est. Impact</span>
+              <span className="text-3xl font-black text-green-400 font-mono tracking-tighter">${totalValue}</span>
+            </div>
+          </div>
+          <div className="flex space-x-6">
+            <button 
+              onClick={onCancel}
+              className="flex-1 py-5 rounded-2xl border border-white/10 text-gray-500 font-black text-sm uppercase tracking-widest hover:bg-white/5 transition-all"
+            >
+              Abort
+            </button>
+            <button 
+              onClick={onConfirm}
+              className={`flex-1 py-5 rounded-2xl text-white font-black text-sm uppercase tracking-widest transition-all shadow-xl ${type === 'BUY' ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-600/20' : 'bg-red-600 hover:bg-red-500 shadow-red-600/20'}`}
+            >
+              Commit
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Dashboard() {
   const [ticker, setTicker] = useState('AAPL');
   const [data, setData] = useState([]);
@@ -301,7 +410,9 @@ function Dashboard() {
   const [quantity, setQuantity] = useState(1);
   const [period, setPeriod] = useState('1d');
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isHoldingsOpen, setIsHoldingsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [confirmationData, setConfirmationData] = useState({ isOpen: false, type: '', quantity: 0, ticker: '', price: 0 });
   const [loading, setLoading] = useState(true);
   
   const [username] = useState(localStorage.getItem('username') || 'Trader');
@@ -356,7 +467,8 @@ function Dashboard() {
   const fetchHistory = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${MARKET_API_URL}/predict/history/${ticker}?period=${period}`);
+      const p = period === '1m' ? '1mo' : period;
+      const response = await axios.get(`${MARKET_API_URL}/predict/history/${ticker}?period=${p}`);
       if (response.data && response.data.history) {
         const historyData = response.data.history.map(point => ({
           name: (period === '1d' || period === '5d') 
@@ -374,21 +486,23 @@ function Dashboard() {
     setLoading(false);
   };
 
-  const handleTrade = async (type) => {
+  const handleTrade = (type) => {
     if (quantity <= 0) {
         alert("Execution failed: Quantity must be greater than zero.");
         return;
     }
-    
-    const confirmMsg = `EXECUTIUON ALERT: Confirm ${type} of ${quantity} units of ${ticker} @ $${currentPrice.toFixed(2)}?\nTotal Execution Value: $${(quantity * currentPrice).toLocaleString()}`;
-    const confirmed = window.confirm(confirmMsg);
-    if (!confirmed) return;
+    setConfirmationData({ isOpen: true, type, quantity: parseInt(quantity), ticker, price: currentPrice });
+  };
 
+  const executeTrade = async () => {
+    const { type, quantity, ticker, price } = confirmationData;
+    setConfirmationData({ ...confirmationData, isOpen: false });
+    
     try {
       await axios.post(`${API_BASE_URL}/orders`, {
         ticker: ticker,
         quantity: parseInt(quantity),
-        price: currentPrice,
+        price: price,
         type: type,
         username: username
       });
@@ -500,7 +614,7 @@ function Dashboard() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="12 12" stroke="#ffffff05" vertical={false} />
-                <XAxis dataKey="name" stroke="#4b5563" fontSize={12} tickMargin={25} axisLine={false} tickLine={false} fontStyle="italic" fontWeight="900" />
+                <XAxis dataKey="name" stroke="#4b5563" fontSize={11} tickMargin={15} axisLine={false} tickLine={false} fontStyle="italic" fontWeight="900" />
                 <YAxis hide domain={['auto', 'auto']} />
                 <Tooltip
                   cursor={{ stroke: '#3b82f6', strokeWidth: 2, strokeDasharray: '4 4' }}
@@ -549,12 +663,20 @@ function Dashboard() {
                             <p className="text-xl font-black text-gray-600 uppercase tracking-[0.3em] italic mb-4">Inventory Profile</p>
                             <p className="text-5xl font-black text-white italic tracking-tighter">{holdings} <span className="text-blue-500 text-sm font-black uppercase tracking-widest opacity-90">{ticker} Units</span></p>
                         </div>
-                        <button
-                            onClick={() => setIsHistoryOpen(true)}
-                            className="bg-white/5 hover:bg-white/10 text-white px-8 py-4 rounded-2xl transition-all font-black text-xs uppercase tracking-[0.3em] border border-white/10 active:scale-95 italic shadow-lg"
-                        >
-                            Log Audit
-                        </button>
+                        <div className="flex space-x-3">
+                            <button
+                                onClick={() => setIsHoldingsOpen(true)}
+                                className="bg-blue-600/10 hover:bg-blue-600 text-blue-400 hover:text-white px-8 py-4 rounded-2xl transition-all font-black text-xs uppercase tracking-[0.3em] border border-blue-500/20 active:scale-95 italic shadow-lg"
+                            >
+                                Holdings
+                            </button>
+                            <button
+                                onClick={() => setIsHistoryOpen(true)}
+                                className="bg-white/5 hover:bg-white/10 text-white px-8 py-4 rounded-2xl transition-all font-black text-xs uppercase tracking-[0.3em] border border-white/10 active:scale-95 italic shadow-lg"
+                            >
+                                Log Audit
+                            </button>
+                        </div>
                     </div>
                     <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden">
                         <div className="h-full bg-blue-500 shadow-[0_0_20px_#3b82f6] transition-all duration-1000" style={{ width: `${Math.min((holdings / 100) * 100, 100)}%` }}></div>
@@ -605,6 +727,13 @@ function Dashboard() {
         onSelect={setTicker} 
       />
       <TradeHistoryModal isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} orders={orders} />
+      <HoldingsModal isOpen={isHoldingsOpen} onClose={() => setIsHoldingsOpen(false)} orders={orders} />
+      <ConfirmationModal 
+        isOpen={confirmationData.isOpen} 
+        onConfirm={executeTrade} 
+        onCancel={() => setConfirmationData({ ...confirmationData, isOpen: false })} 
+        data={confirmationData} 
+      />
     </div>
   );
 }
