@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Configuration Ashwin Suthar MT2025024 - IIIT B SPE Major project FinTech DevOps
+# Configuration Ashwin Suthar MT2025024 - IIIT B SPE Major project FinTech JavaSpringBoot PythonFastAPI DevOps
 LOG_DIR="logs"
 mkdir -p "$LOG_DIR"
 

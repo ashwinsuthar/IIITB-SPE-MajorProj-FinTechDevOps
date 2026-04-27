@@ -6,6 +6,7 @@ import yfinance as yf
 from typing import List, Optional
 import datetime
 
+#Ashwin Suthar MT2025024 - IIIT B SPE Major project FinTech JavaSpringBoot PythonFastAPI DevOps
 app = FastAPI(title="Price Prediction Service", version="1.0.0")
 
 app.add_middleware(
