@@ -31,8 +31,8 @@ pipeline {
                         def service = javaServices[i]
                         dir(service) {
                             echo "Building ${service}..."
-                            sh 'chmod +x ../gradlew || true'
-                            sh '../gradlew build -x test --no-daemon'
+                            sh 'chmod +x ./gradlew || true'
+                            sh './gradlew build -x test --no-daemon'
                         }
                     }
                 }
