@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# Configuration Ashwin Suthar MT2025024 - IIIT B SPE Major project FinTech JavaSpringBoot PythonFastAPI DevOps
 echo "========== Stopping All Services (Host + Docker) =========="
 
 # 1. Stop React JS / Vite processes
