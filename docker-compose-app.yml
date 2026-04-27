@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  config-server:
+    image: ashwins1/spe-stocksys-mjproj:spestocksys-config-server
+    network_mode: "host"
+    
+  eureka-server:
+    image: ashwins1/spe-stocksys-mjproj:spestocksys-eureka-server
+    network_mode: "host"
+
+  api-gateway:
+    image: ashwins1/spe-stocksys-mjproj:spestocksys-api-gateway
+    network_mode: "host"
+
+  user-service:
+    image: ashwins1/spe-stocksys-mjproj:spestocksys-user-service
+    network_mode: "host"
+
+  order-service:
+    image: ashwins1/spe-stocksys-mjproj:spestocksys-order-service
+    network_mode: "host"
+
+  portfolio-service:
+    image: ashwins1/spe-stocksys-mjproj:spestocksys-portfolio-service
+    network_mode: "host"
+
+  market-data:
+    image: ashwins1/spe-stocksys-mjproj:spestocksys-market-data
+    network_mode: "host"
+
+  notification-service:
+    image: ashwins1/spe-stocksys-mjproj:spestocksys-notification-service
+    network_mode: "host"
+
+  risk-service:
+    image: ashwins1/spe-stocksys-mjproj:spestocksys-risk-service
+    network_mode: "host"
+
+  price-prediction:
+    image: ashwins1/spe-stocksys-mjproj:spestocksys-price-prediction
+    network_mode: "host"
+
+  frontend-react:
+    image: ashwins1/spe-stocksys-mjproj:spestocksys-frontend-react
+    network_mode: "host"
