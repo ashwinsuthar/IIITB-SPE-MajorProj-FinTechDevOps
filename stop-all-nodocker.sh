@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Configuration Ashwin Suthar MT2025024 - IIIT B SPE Major project FinTech JavaSpringBoot PythonFastAPI DevOps
+# Configuration Ashwin Suthar MT2025024 - IIIT B SPE Major project FinTech JavaSpringBoot PythonFastAPI DevOps test GitSCM
 echo "========== Stopping Local Services (No-Docker) =========="
 
 # 1. Stop React JS / Vite processes
