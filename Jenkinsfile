@@ -15,7 +15,6 @@ pipeline {
     }
 
     stages {
-/*
         stage('Checkout') {
             steps {
                 git branch: 'main', 
@@ -67,7 +66,6 @@ pipeline {
                 }
             }
         }
-*/
         stage('Run Locally') {
             steps {
                 script {
@@ -84,9 +82,7 @@ pipeline {
                 }
             }
         }
-
 //Pushing Docker images post successful local build run Success #11 (Apr 28, 2026, 2:58:08 AM)
-/*
         stage('Push Docker Images') {
             steps {
                 script {
@@ -103,6 +99,5 @@ pipeline {
                 }
             }
         }
-*/
     }
 }
