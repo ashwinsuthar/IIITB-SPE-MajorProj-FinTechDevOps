@@ -44,13 +44,14 @@ pipeline {
             steps {
                 script {
                     echo "Starting Minikube..."
-                    sh 'minikube start --ports 5173:5173'
+                    //sh 'docker system prune -f || true'
+                    sh 'minikube start --ports 5173:5173 --force'
                     sh 'minikube addons enable metrics-server || true'
                 }
             }
         }
 
-        stage('Build Docker Images') {
+  /*      stage('Build Docker Images') {
             steps {
                 script {
                     echo "Deploying Builder Job to Kubernetes via Ansible..."
@@ -58,7 +59,7 @@ pipeline {
                     echo "K8s Builder Job will build and push images to Docker Hub."
                 }
             }
-        }
+        } */
 
   /*      stage('Run Locally') {
             steps {
