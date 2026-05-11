@@ -85,7 +85,7 @@ pipeline {
             }
         }
 
-//Pushing Docker images post successful local build run Success
+//Pushing Docker images post successful local build run Succes
 /*
         stage('Push Docker Images') {
             steps {
