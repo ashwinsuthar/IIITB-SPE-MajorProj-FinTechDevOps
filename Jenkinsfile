@@ -24,7 +24,7 @@ pipeline {
             }
         }
 
-        stage('Build Java Backend Services') {
+  /*      stage('Build Java Backend Services') {
             steps {
                 script {
                     def javaServices = ["config-server", "eureka-server", "user-service", "order-service", "portfolio-service", "market-data", "api-gateway", "notification-service", "risk-service"]
@@ -36,6 +36,16 @@ pipeline {
                             sh './gradlew build -x test --no-daemon'
                         }
                     }
+                }
+            }
+        }*/
+
+        stage('Start Minikube') {
+            steps {
+                script {
+                    echo "Starting Minikube..."
+                    sh 'minikube start || true'
+                    sh 'minikube addons enable metrics-server || true'
                 }
             }
         }
