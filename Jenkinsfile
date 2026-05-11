@@ -45,8 +45,8 @@ pipeline {
                 script {
                     echo "Starting Minikube..."
                     //sh 'docker system prune -f || true'
-                    sh 'minikube start --ports 5173:5173 --force'
-                    sh 'minikube addons enable metrics-server || true'
+                 //   sh 'minikube start --ports 5173:5173 --force'
+                //    sh 'minikube addons enable metrics-server || true'
                 }
             }
         }
