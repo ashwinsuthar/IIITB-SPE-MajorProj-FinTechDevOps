@@ -25,21 +25,21 @@ spec:
             for service in $JAVA_SERVICES; do
               echo "Building $service..."
               docker build --no-cache -t ashwins1/spe-stocksys-mjproj:spestocksys-$service ./$service
-              echo "Pushing $service..."
-              docker push ashwins1/spe-stocksys-mjproj:spestocksys-$service
+              # echo "Pushing $service..."
+              # docker push ashwins1/spe-stocksys-mjproj:spestocksys-$service
             done
             
             echo "Building price-prediction..."
             docker build --no-cache -t ashwins1/spe-stocksys-mjproj:spestocksys-price-prediction ./price-prediction
-            echo "Pushing price-prediction..."
-            docker push ashwins1/spe-stocksys-mjproj:spestocksys-price-prediction
+            # echo "Pushing price-prediction..."
+            # docker push ashwins1/spe-stocksys-mjproj:spestocksys-price-prediction
             
             echo "Building frontend-react..."
             docker build --no-cache -t ashwins1/spe-stocksys-mjproj:spestocksys-frontend-react ./frontend-react
-            echo "Pushing frontend-react..."
-            docker push ashwins1/spe-stocksys-mjproj:spestocksys-frontend-react
+            # echo "Pushing frontend-react..."
+            # docker push ashwins1/spe-stocksys-mjproj:spestocksys-frontend-react
             
-            echo "All images built and pushed successfully!"
+            echo "All images built successfully! (Pushing to Hub is currently commented out)"
         env:
         - name: DOCKER_USERNAME
           valueFrom:

@@ -61,7 +61,7 @@ pipeline {
             }
         }
 
-        stage('Run Locally') {
+  /*      stage('Run Locally') {
             steps {
                 script {
                     echo "Starting infrastructure..."
@@ -74,6 +74,15 @@ pipeline {
                     sleep 30
                     
                     sh 'docker ps'
+                }
+            }
+        } */
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    echo "Deploying application to Kubernetes via Ansible..."
+                    sh 'ansible-playbook ansible/playbook.yml'
                 }
             }
         }
