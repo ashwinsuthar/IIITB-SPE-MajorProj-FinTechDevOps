@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     echo "Starting Minikube..."
-                    sh 'minikube start'
+                    sh 'minikube start --ports 5173:5173'
                     sh 'minikube addons enable metrics-server || true'
                 }
             }
