@@ -1,28 +1,19 @@
 ---
 - name: Ensure Kubernetes namespace exists
-  k8s:
-    name: stock-portfolio
-    api_version: v1
-    kind: Namespace
-    state: present
+  command: kubectl create namespace stock-portfolio
+  ignore_errors: yes
 
 - name: Apply Vault configuration
-  k8s:
-    state: present
-    definition: "{{ lookup('file', '../k8s/vault-secret.yaml') | from_yaml }}"
+  command: kubectl apply -f {{ playbook_dir }}/../k8s/vault-secret.yaml
 
 - name: Delete existing builder job if exists to ensure clean run
-  k8s:
-    state: absent
-    api_version: batch/v1
-    kind: Job
-    name: docker-image-builder
-    namespace: stock-portfolio
+  command: kubectl delete job docker-image-builder -n stock-portfolio
+  ignore_errors: yes
 
 - name: Apply K8s Builder Job
-  k8s:
-    state: present
-    definition: "{{ lookup('file', '../k8s/builder-job.yaml') | from_yaml }}"
+  command: kubectl apply -f {{ playbook_dir }}/../k8s/builder-job.yaml
 
 - name: Wait for K8s Builder Job to complete
-  command: kubectl wait --for=condition=complete --timeout=3600s job/docker-image-builder -n stock-portfolio
+  command: >
+    kubectl wait --for=condition=complete --timeout=3600s
+    job/docker-image-builder -n stock-portfolio
