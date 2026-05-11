@@ -6,7 +6,7 @@ services = {
     "postgres": {"image": "postgres:15-alpine", "port": 5432, "env": {"POSTGRES_USER": "root", "POSTGRES_PASSWORD": "rootpassword", "POSTGRES_DB": "stock_portfolio"}},
     "redis": {"image": "redis:7-alpine", "port": 6379},
     "vault": {"image": "vault:1.13.2", "port": 8200, "env": {"VAULT_DEV_ROOT_TOKEN_ID": "root", "VAULT_DEV_LISTEN_ADDRESS": "0.0.0.0:8200"}},
-    "elasticsearch": {"image": "elasticsearch:8.8.1", "port": 9200, "env": {"discovery.type": "single-node", "xpack.security.enabled": "false", "ES_JAVA_OPTS": "-Xms1g -Xmx1g"}},
+    "elasticsearch": {"image": "elasticsearch:8.8.1", "port": 9200, "env": {"discovery.type": "single-node", "xpack.security.enabled": "false", "ES_JAVA_OPTS": "-Xms512m -Xmx512m"}},
     "kibana": {"image": "kibana:8.8.1", "port": 5601, "env": {"ELASTICSEARCH_HOSTS": "http://elasticsearch:9200"}},
     "logstash": {"image": "logstash:8.8.1", "port": 5044},
     "config-server": {"image": "ashwins1/spe-stocksys-mjproj:spestocksys-config-server", "port": 8888},
@@ -84,15 +84,17 @@ with open("k8s/deployment.yaml", "w") as f:
             "metadata": {"name": name, "namespace": "stock-portfolio"},
             "spec": {
                 "replicas": 1,
+                "strategy": {"type": "Recreate"},
                 "selector": {"matchLabels": {"app": name}},
                 "template": {
                     "metadata": {"labels": {"app": name}},
                     "spec": {
                         "hostNetwork": True,
+                        "enableServiceLinks": False, # CRITICAL: Prevents Kafka KAFKA_PORT env var crash!
                         "containers": [{
                             "name": name,
                             "image": data["image"],
-                            "imagePullPolicy": "IfNotPresent",  # Prevents unnecessary redownloads
+                            "imagePullPolicy": "IfNotPresent",
                             "ports": [{"containerPort": data["port"]}],
                             "env": env_list,
                             "resources": res
@@ -106,4 +108,4 @@ with open("k8s/deployment.yaml", "w") as f:
         f.write("---\n")
         yaml.dump(dep, f)
 
-print("Generated full k8s/deployment.yaml with updated memory limits and imagePullPolicy")
+print("Generated full k8s/deployment.yaml with enableServiceLinks: False")

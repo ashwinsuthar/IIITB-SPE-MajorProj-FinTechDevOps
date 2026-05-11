@@ -21,6 +21,8 @@ spec:
   selector:
     matchLabels:
       app: zookeeper
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -54,6 +56,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -78,6 +81,8 @@ spec:
   selector:
     matchLabels:
       app: kafka
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -119,6 +124,7 @@ spec:
           requests:
             cpu: 500m
             memory: 1Gi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -143,6 +149,8 @@ spec:
   selector:
     matchLabels:
       app: postgres
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -178,6 +186,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -202,6 +211,8 @@ spec:
   selector:
     matchLabels:
       app: redis
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -231,6 +242,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -255,6 +267,8 @@ spec:
   selector:
     matchLabels:
       app: vault
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -288,6 +302,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -312,6 +327,8 @@ spec:
   selector:
     matchLabels:
       app: elasticsearch
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -324,7 +341,7 @@ spec:
         - name: xpack.security.enabled
           value: 'false'
         - name: ES_JAVA_OPTS
-          value: -Xms1g -Xmx1g
+          value: -Xms512m -Xmx512m
         - name: VAULT_TOKEN
           valueFrom:
             secretKeyRef:
@@ -347,6 +364,7 @@ spec:
           requests:
             cpu: 500m
             memory: 1Gi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -371,6 +389,8 @@ spec:
   selector:
     matchLabels:
       app: kibana
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -402,6 +422,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -426,6 +447,8 @@ spec:
   selector:
     matchLabels:
       app: logstash
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -455,6 +478,7 @@ spec:
           requests:
             cpu: 500m
             memory: 1Gi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -479,6 +503,8 @@ spec:
   selector:
     matchLabels:
       app: config-server
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -508,6 +534,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -532,6 +559,8 @@ spec:
   selector:
     matchLabels:
       app: eureka-server
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -561,6 +590,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -585,6 +615,8 @@ spec:
   selector:
     matchLabels:
       app: api-gateway
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -616,6 +648,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -640,6 +673,8 @@ spec:
   selector:
     matchLabels:
       app: user-service
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -669,6 +704,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -693,6 +729,8 @@ spec:
   selector:
     matchLabels:
       app: order-service
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -722,6 +760,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -746,6 +785,8 @@ spec:
   selector:
     matchLabels:
       app: portfolio-service
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -775,6 +816,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -799,6 +841,8 @@ spec:
   selector:
     matchLabels:
       app: market-data
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -828,6 +872,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -852,6 +897,8 @@ spec:
   selector:
     matchLabels:
       app: notification-service
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -881,6 +928,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -905,6 +953,8 @@ spec:
   selector:
     matchLabels:
       app: risk-service
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -934,6 +984,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -958,6 +1009,8 @@ spec:
   selector:
     matchLabels:
       app: price-prediction
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -987,6 +1040,7 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
 ---
 apiVersion: v1
@@ -1013,6 +1067,8 @@ spec:
   selector:
     matchLabels:
       app: frontend-react
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -1042,4 +1098,5 @@ spec:
           requests:
             cpu: 250m
             memory: 256Mi
+      enableServiceLinks: false
       hostNetwork: true
