@@ -44,7 +44,6 @@ pipeline {
             steps {
                 script {
                     echo "Starting Minikube..."
-                    sh 'minikube delete || true'
                     sh 'minikube start'
                     sh 'minikube addons enable metrics-server || true'
                 }
