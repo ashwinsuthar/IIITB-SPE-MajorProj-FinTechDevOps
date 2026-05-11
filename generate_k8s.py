@@ -6,7 +6,7 @@ services = {
     "postgres": {"image": "postgres:15-alpine", "port": 5432, "env": {"POSTGRES_USER": "root", "POSTGRES_PASSWORD": "rootpassword", "POSTGRES_DB": "stock_portfolio"}},
     "redis": {"image": "redis:7-alpine", "port": 6379},
     "vault": {"image": "vault:1.13.2", "port": 8200, "env": {"VAULT_DEV_ROOT_TOKEN_ID": "root", "VAULT_DEV_LISTEN_ADDRESS": "0.0.0.0:8200"}},
-    "elasticsearch": {"image": "elasticsearch:8.8.1", "port": 9200, "env": {"discovery.type": "single-node", "xpack.security.enabled": "false", "ES_JAVA_OPTS": "-Xms512m -Xmx512m"}},
+    "elasticsearch": {"image": "elasticsearch:8.8.1", "port": 9200, "env": {"discovery.type": "single-node", "xpack.security.enabled": "false", "ES_JAVA_OPTS": "-Xms1g -Xmx1g"}},
     "kibana": {"image": "kibana:8.8.1", "port": 5601, "env": {"ELASTICSEARCH_HOSTS": "http://elasticsearch:9200"}},
     "logstash": {"image": "logstash:8.8.1", "port": 5044},
     "config-server": {"image": "ashwins1/spe-stocksys-mjproj:spestocksys-config-server", "port": 8888},
@@ -43,15 +43,14 @@ vault_env = [
     }
 ]
 
-resources = {
-    "requests": {
-        "cpu": "250m",
-        "memory": "256Mi"
-    },
-    "limits": {
-        "cpu": "500m",
-        "memory": "512Mi"
-    }
+default_resources = {
+    "requests": {"cpu": "250m", "memory": "256Mi"},
+    "limits": {"cpu": "500m", "memory": "512Mi"}
+}
+
+heavy_resources = {
+    "requests": {"cpu": "500m", "memory": "1Gi"},
+    "limits": {"cpu": "1000m", "memory": "2Gi"}
 }
 
 with open("k8s/deployment.yaml", "w") as f:
@@ -76,6 +75,9 @@ with open("k8s/deployment.yaml", "w") as f:
         # Append Vault env vars
         env_list.extend(vault_env)
 
+        # Assign resources based on service
+        res = heavy_resources if name in ["elasticsearch", "kafka", "logstash"] else default_resources
+
         dep = {
             "apiVersion": "apps/v1",
             "kind": "Deployment",
@@ -90,9 +92,10 @@ with open("k8s/deployment.yaml", "w") as f:
                         "containers": [{
                             "name": name,
                             "image": data["image"],
+                            "imagePullPolicy": "IfNotPresent",  # Prevents unnecessary redownloads
                             "ports": [{"containerPort": data["port"]}],
                             "env": env_list,
-                            "resources": resources
+                            "resources": res
                         }]
                     }
                 }
@@ -103,4 +106,4 @@ with open("k8s/deployment.yaml", "w") as f:
         f.write("---\n")
         yaml.dump(dep, f)
 
-print("Generated full k8s/deployment.yaml")
+print("Generated full k8s/deployment.yaml with updated memory limits and imagePullPolicy")

@@ -43,6 +43,7 @@ spec:
               key: db_password
               name: vault-keys
         image: confluentinc/cp-zookeeper:7.4.0
+        imagePullPolicy: IfNotPresent
         name: zookeeper
         ports:
         - containerPort: 2181
@@ -107,16 +108,17 @@ spec:
               key: db_password
               name: vault-keys
         image: confluentinc/cp-kafka:7.4.0
+        imagePullPolicy: IfNotPresent
         name: kafka
         ports:
         - containerPort: 9092
         resources:
           limits:
-            cpu: 500m
-            memory: 512Mi
+            cpu: 1000m
+            memory: 2Gi
           requests:
-            cpu: 250m
-            memory: 256Mi
+            cpu: 500m
+            memory: 1Gi
       hostNetwork: true
 ---
 apiVersion: v1
@@ -165,6 +167,7 @@ spec:
               key: db_password
               name: vault-keys
         image: postgres:15-alpine
+        imagePullPolicy: IfNotPresent
         name: postgres
         ports:
         - containerPort: 5432
@@ -217,6 +220,7 @@ spec:
               key: db_password
               name: vault-keys
         image: redis:7-alpine
+        imagePullPolicy: IfNotPresent
         name: redis
         ports:
         - containerPort: 6379
@@ -273,6 +277,7 @@ spec:
               key: db_password
               name: vault-keys
         image: vault:1.13.2
+        imagePullPolicy: IfNotPresent
         name: vault
         ports:
         - containerPort: 8200
@@ -319,7 +324,7 @@ spec:
         - name: xpack.security.enabled
           value: 'false'
         - name: ES_JAVA_OPTS
-          value: -Xms512m -Xmx512m
+          value: -Xms1g -Xmx1g
         - name: VAULT_TOKEN
           valueFrom:
             secretKeyRef:
@@ -331,16 +336,17 @@ spec:
               key: db_password
               name: vault-keys
         image: elasticsearch:8.8.1
+        imagePullPolicy: IfNotPresent
         name: elasticsearch
         ports:
         - containerPort: 9200
         resources:
           limits:
-            cpu: 500m
-            memory: 512Mi
+            cpu: 1000m
+            memory: 2Gi
           requests:
-            cpu: 250m
-            memory: 256Mi
+            cpu: 500m
+            memory: 1Gi
       hostNetwork: true
 ---
 apiVersion: v1
@@ -385,6 +391,7 @@ spec:
               key: db_password
               name: vault-keys
         image: kibana:8.8.1
+        imagePullPolicy: IfNotPresent
         name: kibana
         ports:
         - containerPort: 5601
@@ -437,16 +444,17 @@ spec:
               key: db_password
               name: vault-keys
         image: logstash:8.8.1
+        imagePullPolicy: IfNotPresent
         name: logstash
         ports:
         - containerPort: 5044
         resources:
           limits:
-            cpu: 500m
-            memory: 512Mi
+            cpu: 1000m
+            memory: 2Gi
           requests:
-            cpu: 250m
-            memory: 256Mi
+            cpu: 500m
+            memory: 1Gi
       hostNetwork: true
 ---
 apiVersion: v1
@@ -489,6 +497,7 @@ spec:
               key: db_password
               name: vault-keys
         image: ashwins1/spe-stocksys-mjproj:spestocksys-config-server
+        imagePullPolicy: IfNotPresent
         name: config-server
         ports:
         - containerPort: 8888
@@ -541,6 +550,7 @@ spec:
               key: db_password
               name: vault-keys
         image: ashwins1/spe-stocksys-mjproj:spestocksys-eureka-server
+        imagePullPolicy: IfNotPresent
         name: eureka-server
         ports:
         - containerPort: 8761
@@ -595,6 +605,7 @@ spec:
               key: db_password
               name: vault-keys
         image: ashwins1/spe-stocksys-mjproj:spestocksys-api-gateway
+        imagePullPolicy: IfNotPresent
         name: api-gateway
         ports:
         - containerPort: 8087
@@ -647,6 +658,7 @@ spec:
               key: db_password
               name: vault-keys
         image: ashwins1/spe-stocksys-mjproj:spestocksys-user-service
+        imagePullPolicy: IfNotPresent
         name: user-service
         ports:
         - containerPort: 8081
@@ -699,6 +711,7 @@ spec:
               key: db_password
               name: vault-keys
         image: ashwins1/spe-stocksys-mjproj:spestocksys-order-service
+        imagePullPolicy: IfNotPresent
         name: order-service
         ports:
         - containerPort: 8082
@@ -751,6 +764,7 @@ spec:
               key: db_password
               name: vault-keys
         image: ashwins1/spe-stocksys-mjproj:spestocksys-portfolio-service
+        imagePullPolicy: IfNotPresent
         name: portfolio-service
         ports:
         - containerPort: 8083
@@ -803,6 +817,7 @@ spec:
               key: db_password
               name: vault-keys
         image: ashwins1/spe-stocksys-mjproj:spestocksys-market-data
+        imagePullPolicy: IfNotPresent
         name: market-data
         ports:
         - containerPort: 8084
@@ -855,6 +870,7 @@ spec:
               key: db_password
               name: vault-keys
         image: ashwins1/spe-stocksys-mjproj:spestocksys-notification-service
+        imagePullPolicy: IfNotPresent
         name: notification-service
         ports:
         - containerPort: 8085
@@ -907,6 +923,7 @@ spec:
               key: db_password
               name: vault-keys
         image: ashwins1/spe-stocksys-mjproj:spestocksys-risk-service
+        imagePullPolicy: IfNotPresent
         name: risk-service
         ports:
         - containerPort: 8086
@@ -959,6 +976,7 @@ spec:
               key: db_password
               name: vault-keys
         image: ashwins1/spe-stocksys-mjproj:spestocksys-price-prediction
+        imagePullPolicy: IfNotPresent
         name: price-prediction
         ports:
         - containerPort: 8000
@@ -1013,6 +1031,7 @@ spec:
               key: db_password
               name: vault-keys
         image: ashwins1/spe-stocksys-mjproj:spestocksys-frontend-react
+        imagePullPolicy: IfNotPresent
         name: frontend-react
         ports:
         - containerPort: 5173
