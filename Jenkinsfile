@@ -15,7 +15,7 @@ pipeline {
     }
 
     stages {
-/*
+
         stage('Checkout') {
             steps {
                 git branch: 'main', 
@@ -43,31 +43,13 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    // 1. Java Services
-                    def javaServices = ["config-server", "eureka-server", "user-service", "order-service", "portfolio-service", "market-data", "api-gateway", "notification-service", "risk-service"]
-                    for (int i = 0; i < javaServices.size(); i++) {
-                        def service = javaServices[i]
-                        dir(service) {
-                            echo "Dockerizing ${service}..."
-                            docker.build("${env.DOCKER_REPO}:spestocksys-${service}", "--no-cache .")
-                        }
-                    }
-                    
-                    // 2. Python Service
-                    dir('price-prediction') {
-                        echo "Dockerizing price-prediction..."
-                        docker.build("${env.DOCKER_REPO}:spestocksys-price-prediction", "--no-cache .")
-                    }
-                    
-                    // 3. React Frontend Service
-                    dir('frontend-react') {
-                        echo "Dockerizing frontend-react..."
-                        docker.build("${env.DOCKER_REPO}:spestocksys-frontend-react", "--no-cache .")
-                    }
+                    echo "Deploying Builder Job to Kubernetes via Ansible..."
+                    sh 'ansible-playbook ansible/playbook-build.yml'
+                    echo "K8s Builder Job will build and push images to Docker Hub."
                 }
             }
         }
-*/
+
         stage('Run Locally') {
             steps {
                 script {
@@ -86,23 +68,8 @@ pipeline {
         }
 
 //Pushing Docker images post successful local build run Succes
-/*
-        stage('Push Docker Images') {
-            steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        def javaServices = ["config-server", "eureka-server", "user-service", "order-service", "portfolio-service", "market-data", "api-gateway", "notification-service", "risk-service"]
-                        for (int i = 0; i < javaServices.size(); i++) {
-                            def service = javaServices[i]
-                            docker.image("${env.DOCKER_REPO}:spestocksys-${service}").push()
-                        }
-                        
-                        docker.image("${env.DOCKER_REPO}:spestocksys-price-prediction").push()
-                        docker.image("${env.DOCKER_REPO}:spestocksys-frontend-react").push()
-                    }
-                }
-            }
-        }
-*/
+
+        // Push Docker Images stage removed as K8s job pushes images during the Build Docker Images stage
+
     }
 }
