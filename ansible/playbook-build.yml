@@ -1,0 +1,6 @@
+---
+- name: Deploy K8s Docker Image Builder Job
+  hosts: localhost
+  connection: local
+  roles:
+    - k8s-build

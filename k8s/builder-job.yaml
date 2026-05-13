@@ -1,0 +1,66 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: docker-image-builder
+  namespace: stock-portfolio
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      containers:
+      - name: docker-builder
+        image: docker:git
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            echo "Cloning repository..."
+            git clone https://github.com/ashwinsuthar/IIITB-SPE-MajorProj-FinTechDevOps.git /workspace
+            cd /workspace
+            
+            echo "Logging into Docker Hub..."
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            
+            JAVA_SERVICES="config-server eureka-server user-service order-service portfolio-service market-data api-gateway notification-service risk-service"
+            
+            for service in $JAVA_SERVICES; do
+              echo "Building $service..."
+              docker build --no-cache -t ashwins1/spe-stocksys-mjproj:spestocksys-$service ./$service
+              # echo "Pushing $service..."
+              # docker push ashwins1/spe-stocksys-mjproj:spestocksys-$service
+            done
+            
+            echo "Building price-prediction..."
+            docker build --no-cache -t ashwins1/spe-stocksys-mjproj:spestocksys-price-prediction ./price-prediction
+            # echo "Pushing price-prediction..."
+            # docker push ashwins1/spe-stocksys-mjproj:spestocksys-price-prediction
+            
+            echo "Building frontend-react..."
+            docker build --no-cache -t ashwins1/spe-stocksys-mjproj:spestocksys-frontend-react ./frontend-react
+            # echo "Pushing frontend-react..."
+            # docker push ashwins1/spe-stocksys-mjproj:spestocksys-frontend-react
+            
+            echo "All images built successfully! (Pushing to Hub is currently commented out)"
+        env:
+        - name: DOCKER_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: vault-keys
+              key: docker_username
+        - name: DOCKER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vault-keys
+              key: docker_password
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vault-keys
+              key: db_password
+        volumeMounts:
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+      volumes:
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+      restartPolicy: Never

@@ -1,0 +1,17 @@
+---
+- name: Ensure Kubernetes namespace exists
+  shell: kubectl get namespace stock-portfolio || kubectl create namespace stock-portfolio
+
+- name: Apply Vault configuration
+  command: kubectl apply -f {{ playbook_dir }}/../k8s/vault-secret.yaml
+
+- name: Delete existing builder job if exists to ensure clean run
+  shell: kubectl delete job docker-image-builder -n stock-portfolio || true
+
+- name: Apply K8s Builder Job
+  command: kubectl apply -f {{ playbook_dir }}/../k8s/builder-job.yaml
+
+- name: Wait for K8s Builder Job to complete
+  command: >
+    kubectl wait --for=condition=complete --timeout=3600s
+    job/docker-image-builder -n stock-portfolio
