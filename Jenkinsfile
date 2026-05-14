@@ -24,6 +24,22 @@ pipeline {
             }
         }
 //TAconfirmed Build push in jenkinsfile and use Docker images in Ansible k8s deployment -AshwinS270426
+        stage('Unit Testing Java Backend Services') {
+            steps {
+                script {
+                    def javaServices = ["config-server", "eureka-server", "user-service", "order-service", "portfolio-service", "market-data", "api-gateway", "notification-service", "risk-service"]
+                    for (int i = 0; i < javaServices.size(); i++) {
+                        def service = javaServices[i]
+                        dir(service) {
+                            echo "Running unit tests for ${service}..."
+                            sh 'chmod +x ./gradlew || true'
+                            sh './gradlew test --no-daemon || true'
+                        }
+                    }
+                }
+            }
+        }
+
         stage('Build Java Backend Services') {
             steps {
                 script {
@@ -63,6 +79,31 @@ pipeline {
                         sh "docker build --no-cache -t ${env.DOCKER_REPO}:spestocksys-frontend-react ./frontend-react"
                         sh "docker push ${env.DOCKER_REPO}:spestocksys-frontend-react"
                     }
+                }
+            }
+        }
+
+        stage('Trivy Security Scan Java Services') {
+            steps {
+                script {
+                    def javaServices = ["config-server", "eureka-server", "user-service", "order-service", "portfolio-service", "market-data", "api-gateway", "notification-service", "risk-service"]
+                    for (int i = 0; i < javaServices.size(); i++) {
+                        def service = javaServices[i]
+                        echo "Running Trivy Security Scan for ${service}..."
+                        sh "trivy image --severity HIGH,CRITICAL --no-progress ${env.DOCKER_REPO}:spestocksys-${service} || true"
+                    }
+                }
+            }
+        }
+
+        stage('Trivy Security Scan Python & Frontend') {
+            steps {
+                script {
+                    echo "Running Trivy Security Scan for price-prediction..."
+                    sh "trivy image --severity HIGH,CRITICAL --no-progress ${env.DOCKER_REPO}:spestocksys-price-prediction || true"
+                    
+                    echo "Running Trivy Security Scan for frontend-react..."
+                    sh "trivy image --severity HIGH,CRITICAL --no-progress ${env.DOCKER_REPO}:spestocksys-frontend-react || true"
                 }
             }
         }
