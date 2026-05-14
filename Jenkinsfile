@@ -24,7 +24,7 @@ pipeline {
             }
         }
 //if needed can comment below for testing no error before docker build stage no use below Stage-AshwinS270426
-       stage('Build Java Backend Services') {
+     /*  stage('Build Java Backend Services') {
             steps {
                 script {
                     def javaServices = ["config-server", "eureka-server", "user-service", "order-service", "portfolio-service", "market-data", "api-gateway", "notification-service", "risk-service"]
@@ -38,7 +38,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 //start minikube and deploy only builder job for building images -AshwinS270426
         stage('Start Minikube') {
             steps {
