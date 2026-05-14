@@ -26,9 +26,18 @@ spec:
               echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
               JAVA_SERVICES="config-server eureka-server user-service order-service portfolio-service market-data api-gateway notification-service risk-service"
-
+              
+              echo "Installing JDK to compile Java services..."
+              apk add --no-cache openjdk17
+              
               for service in $JAVA_SERVICES; do
-                echo "Building $service..."
+                echo "Compiling $service..."
+                cd ./$service
+                chmod +x ./gradlew || true
+                ./gradlew build -x test --no-daemon
+                cd ..
+                
+                echo "Building Docker image for $service..."
                 docker build -t ashwins1/spe-stocksys-mjproj:spestocksys-$service ./$service
                 echo "Pushing $service..."
                 docker push ashwins1/spe-stocksys-mjproj:spestocksys-$service
