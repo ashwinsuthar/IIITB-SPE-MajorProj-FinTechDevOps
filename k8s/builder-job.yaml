@@ -13,8 +13,13 @@ spec:
           command: [ "/bin/sh", "-c" ]
           args:
             - |
+              set -e
+              until docker info > /dev/null 2>&1; do
+                echo "Waiting for Docker daemon to start..."
+                sleep 2
+              done
               echo "Cloning repository..."
-              git clone https://github.com/ashwinsuthar/IIITB-SPE-MajorProj-FinTechDevOps.git /workspace
+              git clone https://${GITHUB_PAT}@github.com/ashwinsuthar/IIITB-SPE-MajorProj-FinTechDevOps.git /workspace
               cd /workspace
 
               echo "Logging into Docker Hub..."
@@ -41,6 +46,8 @@ spec:
 
               echo "All images built successfully!"
           env:
+            - name: DOCKER_HOST
+              value: "tcp://localhost:2375"
             - name: DOCKER_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -56,11 +63,16 @@ spec:
                 secretKeyRef:
                   name: vault-keys
                   key: db_password
-          volumeMounts:
-            - name: docker-sock
-              mountPath: /var/run/docker.sock
-      volumes:
-        - name: docker-sock
-          hostPath:
-            path: /var/run/docker.sock
+            - name: GITHUB_PAT
+              valueFrom:
+                secretKeyRef:
+                  name: vault-keys
+                  key: github_pat
+        - name: dind
+          image: docker:dind
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+          securityContext:
+            privileged: true
       restartPolicy: Never
