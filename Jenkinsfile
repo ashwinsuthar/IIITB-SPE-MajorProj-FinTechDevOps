@@ -23,8 +23,24 @@ pipeline {
                     url: env.GIT_URL
             }
         }
-//if needed can comment below for testing no error before docker build stage no use below Stage-AshwinS270426
-       stage('Build Java Backend Services') {
+//TAconfirmed Build push in jenkinsfile and use Docker images in Ansible k8s deployment -AshwinS270426
+        stage('Unit Testing Java Backend Services') {
+            steps {
+                script {
+                    def javaServices = ["config-server", "eureka-server", "user-service", "order-service", "portfolio-service", "market-data", "api-gateway", "notification-service", "risk-service"]
+                    for (int i = 0; i < javaServices.size(); i++) {
+                        def service = javaServices[i]
+                        dir(service) {
+                            echo "Running unit tests for ${service}..."
+                            sh 'chmod +x ./gradlew || true'
+                            sh './gradlew test --no-daemon || true'
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build Java Backend Services') {
             steps {
                 script {
                     def javaServices = ["config-server", "eureka-server", "user-service", "order-service", "portfolio-service", "market-data", "api-gateway", "notification-service", "risk-service"]
@@ -39,6 +55,58 @@ pipeline {
                 }
             }
         }
+
+        stage('Build Push Docker Images') {
+            steps {
+                script {
+                    echo "Logging into Docker Hub..."
+                    withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                        
+                        def javaServices = ["config-server", "eureka-server", "user-service", "order-service", "portfolio-service", "market-data", "api-gateway", "notification-service", "risk-service"]
+                        for (int i = 0; i < javaServices.size(); i++) {
+                            def service = javaServices[i]
+                            echo "Building and pushing ${service}..."
+                            sh "docker build --no-cache -t ${env.DOCKER_REPO}:spestocksys-${service} ./${service}"
+                            sh "docker push ${env.DOCKER_REPO}:spestocksys-${service}"
+                        }
+                        
+                        echo "Building and pushing price-prediction..."
+                        sh "docker build --no-cache -t ${env.DOCKER_REPO}:spestocksys-price-prediction ./price-prediction"
+                        sh "docker push ${env.DOCKER_REPO}:spestocksys-price-prediction"
+                        
+                        echo "Building and pushing frontend-react..."
+                        sh "docker build --no-cache -t ${env.DOCKER_REPO}:spestocksys-frontend-react ./frontend-react"
+                        sh "docker push ${env.DOCKER_REPO}:spestocksys-frontend-react"
+                    }
+                }
+            }
+        }
+
+        stage('Trivy Security Scan Java Services') {
+            steps {
+                script {
+                    def javaServices = ["config-server", "eureka-server", "user-service", "order-service", "portfolio-service", "market-data", "api-gateway", "notification-service", "risk-service"]
+                    for (int i = 0; i < javaServices.size(); i++) {
+                        def service = javaServices[i]
+                        echo "Running Trivy Security Scan for ${service}..."
+                        sh "trivy image --severity HIGH,CRITICAL --no-progress ${env.DOCKER_REPO}:spestocksys-${service} || true"
+                    }
+                }
+            }
+        }
+
+        stage('Trivy Security Scan Python & Frontend') {
+            steps {
+                script {
+                    echo "Running Trivy Security Scan for price-prediction..."
+                    sh "trivy image --severity HIGH,CRITICAL --no-progress ${env.DOCKER_REPO}:spestocksys-price-prediction || true"
+                    
+                    echo "Running Trivy Security Scan for frontend-react..."
+                    sh "trivy image --severity HIGH,CRITICAL --no-progress ${env.DOCKER_REPO}:spestocksys-frontend-react || true"
+                }
+            }
+        }
 //start minikube and deploy only builder job for building images -AshwinS270426
         stage('Start Minikube') {
             steps {
@@ -50,8 +118,9 @@ pipeline {
                 }
             }
         }
-
-        stage('Build Docker Images') {
+/*
+        //TA confirmed NO Ansible build push docker images as JenkinsFileUseIt-AshwinS140526
+        stage('Ansible - Build Push Docker Images') {
             steps {
                 script {
                     echo "Deploying Builder Job to Kubernetes via Ansible..."
@@ -60,7 +129,7 @@ pipeline {
                 }
             }
         } 
-
+*/
   /*        Only Uncomment when want to run locally Docker testing 4GB ram ok-AshwinS270426
          stage('Run Locally') {
             steps {
@@ -79,7 +148,7 @@ pipeline {
             }
         } */
 
-        stage('Deploy to Kubernetes') {
+        stage('Deploy to Kubernetes using Ansible') {
             steps {
                 script {
                     echo "Deploying application to Kubernetes via Ansible..."

@@ -13,34 +13,50 @@ spec:
           command: [ "/bin/sh", "-c" ]
           args:
             - |
+              set -e
+              until docker info > /dev/null 2>&1; do
+                echo "Waiting for Docker daemon to start..."
+                sleep 2
+              done
               echo "Cloning repository..."
-              git clone https://github.com/ashwinsuthar/IIITB-SPE-MajorProj-FinTechDevOps.git /workspace
+              git clone https://${GITHUB_PAT}@github.com/ashwinsuthar/IIITB-SPE-MajorProj-FinTechDevOps.git /workspace
               cd /workspace
 
               echo "Logging into Docker Hub..."
               echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
               JAVA_SERVICES="config-server eureka-server user-service order-service portfolio-service market-data api-gateway notification-service risk-service"
-
+              
+              echo "Installing JDK to compile Java services..."
+              apk add --no-cache openjdk17
+              
               for service in $JAVA_SERVICES; do
-                echo "Building $service..."
-                docker build --no-cache -t ashwins1/spe-stocksys-mjproj:spestocksys-$service ./$service
+                echo "Compiling $service..."
+                cd ./$service
+                chmod +x ./gradlew || true
+                ./gradlew build -x test --no-daemon
+                cd ..
+                
+                echo "Building Docker image for $service..."
+                docker build -t ashwins1/spe-stocksys-mjproj:spestocksys-$service ./$service
                 echo "Pushing $service..."
                 docker push ashwins1/spe-stocksys-mjproj:spestocksys-$service
               done
 
               echo "Building price-prediction..."
-              docker build --no-cache -t ashwins1/spe-stocksys-mjproj:spestocksys-price-prediction ./price-prediction
+              docker build -t ashwins1/spe-stocksys-mjproj:spestocksys-price-prediction ./price-prediction
               echo "Pushing price-prediction..."
               docker push ashwins1/spe-stocksys-mjproj:spestocksys-price-prediction
 
               echo "Building frontend-react..."
-              docker build --no-cache -t ashwins1/spe-stocksys-mjproj:spestocksys-frontend-react ./frontend-react
+              docker build -t ashwins1/spe-stocksys-mjproj:spestocksys-frontend-react ./frontend-react
               echo "Pushing frontend-react..."
               docker push ashwins1/spe-stocksys-mjproj:spestocksys-frontend-react
 
               echo "All images built successfully!"
           env:
+            - name: DOCKER_HOST
+              value: "tcp://localhost:2375"
             - name: DOCKER_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -56,11 +72,16 @@ spec:
                 secretKeyRef:
                   name: vault-keys
                   key: db_password
-          volumeMounts:
-            - name: docker-sock
-              mountPath: /var/run/docker.sock
-      volumes:
-        - name: docker-sock
-          hostPath:
-            path: /var/run/docker.sock
+            - name: GITHUB_PAT
+              valueFrom:
+                secretKeyRef:
+                  name: vault-keys
+                  key: github_pat
+        - name: dind
+          image: docker:dind
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+          securityContext:
+            privileged: true
       restartPolicy: Never
