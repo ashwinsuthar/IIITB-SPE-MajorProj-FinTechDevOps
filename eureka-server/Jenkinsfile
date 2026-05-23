@@ -1,0 +1,87 @@
+pipeline {
+    agent any
+
+    triggers {
+        // Scm polling
+        pollSCM('* * * * *')
+        githubPush()
+    }
+
+    environment {
+        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
+        GITHUB_CREDS_ID = 'github-pat-credentials'
+        DOCKER_REPO = 'ashwins1/spe-stocksys-mjproj'
+        GIT_URL = 'https://github.com/ashwinsuthar/IIITB-SPE-MajorProj-FinTechDevOps.git'
+        SERVICE_NAME = 'eureka-server'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', 
+                    credentialsId: env.GITHUB_CREDS_ID, 
+                    url: env.GIT_URL
+            }
+        }
+
+        stage('Unit Testing') {
+            steps {
+                dir(env.SERVICE_NAME) {
+                    echo "Running unit tests for ${env.SERVICE_NAME}..."
+                    sh 'chmod +x ./gradlew || true'
+                    sh './gradlew test --no-daemon || true'
+                }
+            }
+        }
+
+        stage('Build Java Backend') {
+            steps {
+                dir(env.SERVICE_NAME) {
+                    echo "Building ${env.SERVICE_NAME}..."
+                    sh 'chmod +x ./gradlew || true'
+                    sh './gradlew build -x test --no-daemon'
+                }
+            }
+        }
+
+        stage('Build Push Docker Image') {
+            steps {
+                echo "Logging into Docker Hub..."
+                withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                    
+                    echo "Building and pushing ${env.SERVICE_NAME}..."
+                    sh "docker build --no-cache -t ${env.DOCKER_REPO}:spestocksys-${env.SERVICE_NAME} ./${env.SERVICE_NAME}"
+                    sh "docker push ${env.DOCKER_REPO}:spestocksys-${env.SERVICE_NAME}"
+                }
+            }
+        }
+
+        stage('Trivy Security Scan') {
+            steps {
+                echo "Running Trivy Security Scan for ${env.SERVICE_NAME}..."
+                sh "trivy image --severity HIGH,CRITICAL --no-progress ${env.DOCKER_REPO}:spestocksys-${env.SERVICE_NAME} || true"
+            }
+        }
+
+        stage('Start Minikube') {
+            steps {
+                script {
+                    echo "Starting Minikube..."
+                    //sh 'docker system prune -f || true'
+                 // sh 'minikube start --ports 5173:5173 --force'
+              //    sh 'minikube addons enable metrics-server || true'
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes using Ansible') {
+            steps {
+                script {
+                    echo "Deploying application to Kubernetes via Ansible..."
+                    sh 'ansible-playbook ansible/playbook.yml'
+                }
+            }
+        }
+    }
+}
