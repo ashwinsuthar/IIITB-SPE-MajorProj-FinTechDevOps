@@ -1,0 +1,263 @@
+Forwarding from 0.0.0.0:5601 -> 5601
+Forwarding from 0.0.0.0:8081 -> 8081
+Forwarding from 0.0.0.0:8087 -> 8087
+Forwarding from 0.0.0.0:8000 -> 8000
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 8081
+Handling connection for 8081
+Handling connection for 8000
+Handling connection for 8081
+Handling connection for 8000
+Handling connection for 5601
+Handling connection for 8000
+Handling connection for 8000
+Handling connection for 8000
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:04:42.311257  394452 portforward.go:424] "Unhandled Error" err="an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod ef692f95ff2353bc4fae40ae2a7a187119696b72a1c73d0b164a71ff1022a4b8, uid : Error response from daemon: No such container: ef692f95ff2353bc4fae40ae2a7a187119696b72a1c73d0b164a71ff1022a4b8"
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:04:44.814778  403214 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:34:44 socat[41545] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:04:51.806007  403354 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:34:51 socat[41580] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:04:54.620089  403498 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:34:54 socat[41583] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:04:56.885984  403617 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:34:56 socat[41601] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 8081
+Handling connection for 8081
+Handling connection for 8000
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:05:27.635765  403682 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:35:27 socat[41853] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:05:33.398361  405580 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:35:33 socat[43052] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:05:36.083713  406090 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:35:36 socat[43069] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:05:38.349283  406193 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:35:38 socat[43072] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:05:45.458219  406293 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:35:45 socat[43110] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:05:48.234816  406487 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:35:48 socat[43114] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:06:00.492100  406573 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:36:00 socat[43164] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 8081
+Handling connection for 8081
+Handling connection for 8000
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:06:47.907048  407166 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:36:47 socat[43362] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+E0523 19:06:57.504669  408222 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:36:57 socat[43398] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+E0523 19:07:00.371991  408981 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:37:00 socat[44268] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+E0523 19:07:07.482281  410154 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:37:07 socat[44707] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+E0523 19:07:14.580407  410350 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:37:14 socat[44732] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+E0523 19:07:21.701872  410530 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:37:21 socat[44767] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+E0523 19:07:28.800107  410674 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:37:28 socat[44784] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+E0523 19:07:35.899478  410885 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:37:35 socat[44818] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+E0523 19:07:42.994200  411050 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:37:42 socat[44844] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+E0523 19:07:50.095489  411258 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:37:50 socat[44863] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 8000
+Handling connection for 5601
+E0523 19:07:57.190137  411438 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : exit status 1: 2026/05/23 13:37:57 socat[44900] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+E0523 19:08:04.282879  411591 portforward.go:424] "Unhandled Error" err="an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629, uid : container not running (eddd1a097b82f40d79db6de53e621ac55cab822deadd08c1214f85a4e0870629)"
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+E0523 19:08:11.382914  413593 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod 240afcd9ac7cbed7b023fa1b3ea6ddbd067cfc9de0b2ff5aaec293439f072800, uid : exit status 1: 2026/05/23 13:38:11 socat[46444] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+E0523 19:08:18.484063  413761 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod 240afcd9ac7cbed7b023fa1b3ea6ddbd067cfc9de0b2ff5aaec293439f072800, uid : exit status 1: 2026/05/23 13:38:18 socat[46474] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:08:23.079754  413922 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod 240afcd9ac7cbed7b023fa1b3ea6ddbd067cfc9de0b2ff5aaec293439f072800, uid : exit status 1: 2026/05/23 13:38:23 socat[46496] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+E0523 19:08:25.578967  414072 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod 240afcd9ac7cbed7b023fa1b3ea6ddbd067cfc9de0b2ff5aaec293439f072800, uid : exit status 1: 2026/05/23 13:38:25 socat[46501] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:08:28.712501  414175 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod 240afcd9ac7cbed7b023fa1b3ea6ddbd067cfc9de0b2ff5aaec293439f072800, uid : exit status 1: 2026/05/23 13:38:28 socat[46522] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 5601
+Handling connection for 5601
+E0523 19:08:30.917209  414325 portforward.go:424] "Unhandled Error" err=<
+	an error occurred forwarding 5601 -> 5601: error forwarding port 5601 to pod 240afcd9ac7cbed7b023fa1b3ea6ddbd067cfc9de0b2ff5aaec293439f072800, uid : exit status 1: 2026/05/23 13:38:30 socat[46542] E connect(5, AF=2 127.0.0.1:5601, 16): Connection refused
+ >
+error: lost connection to pod
+Forwarding from 0.0.0.0:5601 -> 5601
+Handling connection for 8000
+Handling connection for 8081
+Handling connection for 8081
+Handling connection for 8000
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 8000
+Handling connection for 8000
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 8000
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 8000
+Handling connection for 8081
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 8000
+Handling connection for 8000
+Handling connection for 8000
+Handling connection for 8000
+Handling connection for 8000
+Handling connection for 8081
+Handling connection for 8081
+Handling connection for 8000
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 5601
+Handling connection for 8081

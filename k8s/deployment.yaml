@@ -410,11 +410,11 @@ spec:
         - containerPort: 5601
         resources:
           limits:
+            cpu: 1000m
+            memory: 1Gi
+          requests:
             cpu: 500m
             memory: 512Mi
-          requests:
-            cpu: 250m
-            memory: 256Mi
       enableServiceLinks: false
 ---
 apiVersion: v1
@@ -470,7 +470,15 @@ spec:
           requests:
             cpu: 500m
             memory: 1Gi
+        volumeMounts:
+        - mountPath: /usr/share/logstash/pipeline/logstash.conf
+          name: config-volume
+          subPath: logstash.conf
       enableServiceLinks: false
+      volumes:
+      - configMap:
+          name: logstash-config
+        name: config-volume
 ---
 apiVersion: v1
 kind: Service
@@ -1108,3 +1116,4 @@ spec:
             cpu: 250m
             memory: 256Mi
       enableServiceLinks: false
+      hostNetwork: true
